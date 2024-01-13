@@ -16,9 +16,6 @@ const Dashboard = () => {
         corporationRepresentativeName: "",
         representativeTitle: "",
         targetCorporationName: "",
-
-        // firstName: "",
-        // lastName: "",
     });
 
     const handleChange = (e) => {
@@ -30,7 +27,7 @@ const Dashboard = () => {
     const handleEditWordFile = async () => {
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_SERVER_URL}/editWordFile`,
+                `${process.env.REACT_APP_SERVER_URL}/wordRoutes/editWordFile`,
                 {
                     method: "POST",
                     headers: {
