@@ -15,7 +15,11 @@ const originEnvVar =
 // Enable CORS
 app.use(
     cors({
-        origin: [originEnvVar, "https://legal-ease-backend.vercel.app"],
+        origin: [
+            originEnvVar,
+            "https://legal-ease-backend.vercel.app",
+            "https://legal-ease-eight.vercel.app",
+        ],
         methods: "*",
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true,
