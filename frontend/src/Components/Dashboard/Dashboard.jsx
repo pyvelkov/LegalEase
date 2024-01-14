@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
     ChakraProvider,
     Box,
@@ -27,11 +27,10 @@ const Dashboard = () => {
     const handleEditWordFile = async () => {
         try {
             const response = await fetch(
-                `${process.env.REACT_APP_SERVER_URL}/wordRoutes/editWordFile`,
+                `${import.meta.env.VITE_SERVER_URL}/wordRoutes/editWordFile`,
                 {
                     method: "POST",
                     mode: "cors",
-                    credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
                     },

@@ -1,7 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
 import wordRoutes from "./routes/wordRoutes.js";
-import rootRoute from "./routes/rootRoute.js";
 import dotenv from "dotenv";
 import cors from "cors";
 dotenv.config();
@@ -15,7 +14,7 @@ const originEnvVar =
 // Enable CORS
 app.use(
     cors({
-        origin: [originEnvVar, "https://legal-ease-eight.vercel.app"],
+        origin: [originEnvVar, "https://legal-ease-gray.vercel.app"],
         methods: "*",
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true,
@@ -25,7 +24,10 @@ const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
-app.use("/", rootRoute);
+app.get("/", (req, res) => {
+    res.json({ ping: "pong" });
+});
+
 // Use the wordRoutes for /editWordFile route
 app.use("/wordRoutes", wordRoutes);
 

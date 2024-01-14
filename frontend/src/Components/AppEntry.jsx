@@ -1,12 +1,7 @@
-import React from 'react'
-import Dashboard from './Dashboard/Dashboard'
+import Dashboard from "./Dashboard/Dashboard";
 
 const AppEntry = () => {
-  return (
-    <>
-    <Dashboard/>
-    </>
-  )
-}
+    return <Dashboard />;
+};
 
-export default AppEntry
+export default AppEntry;
