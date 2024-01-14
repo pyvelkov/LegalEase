@@ -30,6 +30,8 @@ const Dashboard = () => {
                 `${process.env.REACT_APP_SERVER_URL}/wordRoutes/editWordFile`,
                 {
                     method: "POST",
+                    mode: "cors",
+                    credentials: "include",
                     headers: {
                         "Content-Type": "application/json",
                     },
