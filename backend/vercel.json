@@ -1,3 +1,20 @@
 {
-    "rewrites": [{"source": "/(.*)", "destination": "./"}]
+    "version": 2,
+    "builds": [
+        {
+            "src": "*.js",
+            "use": "@vercel/node"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "/",
+            "methods": ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+            "headers": {
+                "Access-Control-Allow-Origin": "https://legal-ease-eight.vercel.app",
+                "Access-Control-Allow-Credentials": "true"
+            }
+        }
+    ]
 }
