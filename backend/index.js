@@ -7,8 +7,18 @@ import cors from "cors";
 dotenv.config();
 const app = express();
 
+const originEnvVar =
+    process.env.NODE_ENV == "production"
+        ? process.env.CLIENT_URL_PROD
+        : process.env.CLIENT_URL_DEV;
+
 // Enable CORS
-app.use(cors());
+app.use(
+    cors({
+        credentials: true,
+        origin: originEnvVar,
+    })
+);
 const port = process.env.PORT;
 
 app.use(bodyParser.json());
