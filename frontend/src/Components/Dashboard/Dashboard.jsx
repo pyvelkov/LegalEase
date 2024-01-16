@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
     ChakraProvider,
     Box,
@@ -9,44 +9,45 @@ import {
 } from "@chakra-ui/react";
 
 const Dashboard = () => {
-
     // Set initial empty state
-    const [formData, setFormData] = useState(
-        {});
+    const [formData, setFormData] = useState({});
 
-    const getAllFieldNames = () => { 
+    const getAllFieldNames = () => {
         try {
-            fetch(`${import.meta.env.VITE_SERVER_URL}/wordRoutes/templateTags`,
+            fetch(
+                `${import.meta.env.VITE_SERVER_URL}/wordRoutes/templateTags`,
                 {
                     method: "GET",
                     mode: "cors",
                     headers: {
                         "Content-Type": "application/json",
-                    }
-                }).then((res) => {
+                    },
+                }
+            )
+                .then((res) => {
                     console.log(res);
                     return res.json();
-                }).then((data) => {
-
+                })
+                .then((data) => {
                     var tagState = {};
 
                     // Re-structure data from response
                     data.forEach((tag) => {
                         tagState[tag.tagName] = {
                             fieldValue: "",
-                            fieldType: tag.tagType};
+                            fieldType: tag.tagType,
+                        };
                     });
-            
+
                     setFormData(tagState);
                 });
-                
         } catch (error) {
             console.error("Error getting template tags:", error);
         }
-    }
+    };
 
     // Get all unique tags from the template to create input fields for them
-    useEffect(getAllFieldNames(), []);
+    useEffect(getAllFieldNames, []);
 
     const handleChange = (e) => {
         setFormData({
@@ -79,25 +80,25 @@ const Dashboard = () => {
     return (
         <ChakraProvider>
             <Box p={4}>
-
-                {// If tags have been retrieved from backend, render the textboxes.
-                formData ?
-                    (Object.keys(formData).map((fieldName) => (
+                {
+                    // If tags have been retrieved from backend, render the textboxes.
+                    formData ? (
+                        Object.keys(formData).map((fieldName, index) => (
+                            <FormControl key={index}>
+                                <FormLabel>{fieldName}</FormLabel>
+                                <Input
+                                    type={formData[fieldName].fieldType}
+                                    name={fieldName}
+                                    value={formData[fieldName].fieldValue}
+                                    onChange={handleChange}
+                                    placeholder={"Enter value for " + fieldName}
+                                />
+                            </FormControl>
+                        ))
+                    ) : (
+                        // Else, display placeholder
+                        // TODO - Implement loading bar/wheel, etc. while we wait for field data.
                         <FormControl>
-                            <FormLabel>{fieldName}</FormLabel>
-                            <Input
-                                type={formData[fieldName].fieldType}
-                                name={fieldName}
-                                value={formData[fieldName].fieldValue}
-                                onChange={handleChange}
-                                placeholder={"Enter value for " + fieldName}
-                            />
-                        </FormControl>
-                    )))
-                    :
-                    // Else, display placeholder
-                    // TODO - Implement loading bar/wheel, etc. while we wait for field data.
-                    (<FormControl>
                             <FormLabel>PlaceHolder</FormLabel>
                             <Input
                                 type="text"
@@ -106,7 +107,9 @@ const Dashboard = () => {
                                 onChange={handleChange}
                                 placeholder="Enter value for Placeholder"
                             />
-                        </FormControl>)}
+                        </FormControl>
+                    )
+                }
 
                 <Button mt={4} colorScheme="blue" onClick={handleEditWordFile}>
                     Create Document
