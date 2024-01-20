@@ -1,9 +1,7 @@
 import { Router } from "express";
 import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
-import { readFileSync, writeFileSync } from "fs";
-import Docxtemplater from "docxtemplater";
-import PizZip from "pizzip";
+import { getTemplateFromPath } from "../util/docUtils.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -14,24 +12,8 @@ router.get("/templateTags", (req, res) => {
 
     // TODO: Implement template UUIDs
 
-    // Read in template file
-    // TODO: Add all this boiletplate docxtemplater code into utility function.
-    const templatePath = resolve(
-        __dirname,
-        "../files/templates/Retainer Agreement - Corporate (for Corporation).docx"
-    );
-    const template = readFileSync(templatePath, "binary");
-
-    // Unzip the content of the file since word files are considered zipped files.?!
-    const zip = new PizZip(template);
-
-    // This will parse the template, and will throw an error if the template is
-    // invalid, for example, if the template is "{firstName" (no closing tag)
-    // === May need additional error handling ===
-    const doc = new Docxtemplater(zip, {
-        paragraphLoop: true,
-        linebreaks: true,
-    });
+    const doc = getTemplateFromPath(resolve(__dirname,
+        "../files/templates/Retainer Agreement - Corporate (for Corporation).docx"));
 
     const fullDocText = doc.getFullText();
 
@@ -55,20 +37,9 @@ router.get("/templateTags", (req, res) => {
 });
 
 router.post("/editWordFile", (req, res) => {
-    const templatePath = resolve(
-        __dirname,
-        "../files/templates/Retainer Agreement - Corporate (for Corporation).docx"
-    );
-    const template = readFileSync(templatePath, "binary");
-    // Unzip the content of the file since word files are considered zipped files.?!
-    const zip = new PizZip(template);
-
-    // This will parse the template, and will throw an error if the template is
-    // invalid, for example, if the template is "{firstName" (no closing tag)
-    const doc = new Docxtemplater(zip, {
-        paragraphLoop: true,
-        linebreaks: true,
-    });
+    
+    const doc = getTemplateFromPath(resolve(__dirname,
+        "../files/templates/Retainer Agreement - Corporate (for Corporation).docx"));
 
     const data = req.body;
 
