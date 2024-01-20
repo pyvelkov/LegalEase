@@ -1,12 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-    ChakraProvider,
-    Box,
-    Input,
-    Button,
-    FormControl,
-    FormLabel,
-} from "@chakra-ui/react";
+import { Box, Input, Button, FormControl, FormLabel } from "@chakra-ui/react";
 
 const Dashboard = () => {
     // Set initial empty state
@@ -78,7 +71,7 @@ const Dashboard = () => {
     };
 
     return (
-        <ChakraProvider>
+        <>
             <Box p={4}>
                 {
                     // If tags have been retrieved from backend, render the textboxes.
@@ -115,7 +108,7 @@ const Dashboard = () => {
                     Create Document
                 </Button>
             </Box>
-        </ChakraProvider>
+        </>
     );
 };
 
