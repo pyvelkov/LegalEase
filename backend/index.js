@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import wordRoutes from "./routes/wordRoutes.js";
+import templateRoutes from "./routes/templateRoutes.js";
 import dotenv from "dotenv";
 import cors from "cors";
 dotenv.config();
@@ -30,6 +31,7 @@ app.get("/", (req, res) => {
 
 // Use the wordRoutes for /editWordFile route
 app.use("/wordRoutes", wordRoutes);
+app.use("/template", templateRoutes);
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
