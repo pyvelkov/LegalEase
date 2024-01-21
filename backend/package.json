@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "db_init": "..\\database\\db_init.bat",
     "dev": "nodemon index.js",
     "prod": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
