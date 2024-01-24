@@ -47,12 +47,27 @@ const DropZone = () => {
                 borderStyle="dashed"
                 borderColor={isDragActive ? "teal.500" : "gray.300"}
                 cursor="pointer"
+                width="500px"
+                height="100px"
             >
                 <input {...getInputProps()} />
                 <Text>
-                    {isDragActive
-                        ? "Drop the document here!"
-                        : `Drag and drop document here or click to select it! (docx, pdf, image)`}
+                    {isDragActive ? (
+                        <Center>
+                            <Text>{`Drop the document here!`}</Text>
+                        </Center>
+                    ) : (
+                        <>
+                            <Center>
+                                <Text>
+                                    {`Drag and drop document here or click to select it!`}
+                                </Text>
+                            </Center>
+                            <Center>
+                                <Text>{`(docx, pdf, image)`}</Text>
+                            </Center>
+                        </>
+                    )}
                 </Text>
             </Box>
         </Center>
