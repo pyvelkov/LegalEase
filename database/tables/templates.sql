@@ -1,20 +1,20 @@
--- Table: public.TEMPLATES
+-- Table: public.templates
 
--- DROP TABLE IF EXISTS public."TEMPLATES";
+-- DROP TABLE IF EXISTS public.templates;
 
-CREATE TABLE IF NOT EXISTS public."TEMPLATES"
+CREATE TABLE IF NOT EXISTS public.templates
 (
-    "TMP_UUID" uuid NOT NULL,
-    "TMP_NAME" text COLLATE pg_catalog."default" NOT NULL,
-    "TMP_PATH" text COLLATE pg_catalog."default" NOT NULL,
-    "TMP_DATE_CREATED" date NOT NULL,
-    CONSTRAINT "TEMPLATES_pkey" PRIMARY KEY ("TMP_UUID")
+    tmp_uuid uuid NOT NULL,
+    tmp_name text COLLATE pg_catalog."default" NOT NULL,
+    tmp_path text COLLATE pg_catalog."default" NOT NULL,
+    tmp_date_created date NOT NULL,
+    CONSTRAINT templates_pkey PRIMARY KEY (tmp_uuid)
 )
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."TEMPLATES"
+ALTER TABLE IF EXISTS public.templates
     OWNER to postgres;
 
-COMMENT ON TABLE public."TEMPLATES"
+COMMENT ON TABLE public.templates
     IS 'Stores all template records';

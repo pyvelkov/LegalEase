@@ -1,19 +1,19 @@
--- Table: public.SAVED_ELEMENTS
+-- Table: public.saved_elements
 
--- DROP TABLE IF EXISTS public."SAVED_ELEMENTS";
+-- DROP TABLE IF EXISTS public.saved_elements;
 
-CREATE TABLE IF NOT EXISTS public."SAVED_ELEMENTS"
+CREATE TABLE IF NOT EXISTS public.saved_elements
 (
-    "SVE_UUID" uuid NOT NULL,
-    "SVE_NAME" text COLLATE pg_catalog."default" NOT NULL,
-    "SVE_DEFINITION" json NOT NULL,
-    CONSTRAINT "SAVED_ELEMENTS_pkey" PRIMARY KEY ("SVE_UUID")
+    sve_uuid uuid NOT NULL,
+    sve_name text COLLATE pg_catalog."default" NOT NULL,
+    sve_definition json NOT NULL,
+    CONSTRAINT saved_elements_pkey PRIMARY KEY (sve_uuid)
 )
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."SAVED_ELEMENTS"
+ALTER TABLE IF EXISTS public.saved_elements
     OWNER to postgres;
 
-COMMENT ON TABLE public."SAVED_ELEMENTS"
+COMMENT ON TABLE public.saved_elements
     IS 'Stores all definitions for saved elements.';

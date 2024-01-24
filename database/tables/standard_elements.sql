@@ -1,19 +1,19 @@
--- Table: public.STANDARD_ELEMENTS
+-- Table: public.standard_elements
 
--- DROP TABLE IF EXISTS public."STANDARD_ELEMENTS";
+-- DROP TABLE IF EXISTS public.standard_elements;
 
-CREATE TABLE IF NOT EXISTS public."STANDARD_ELEMENTS"
+CREATE TABLE IF NOT EXISTS public.standard_elements
 (
-    "STDE_UUID" uuid NOT NULL,
-    "STDE_NAME" text COLLATE pg_catalog."default" NOT NULL,
-    "STDE_DEFINITION" json NOT NULL,
-    CONSTRAINT "STANDARD_ELEMENTS_pkey" PRIMARY KEY ("STDE_UUID")
+    stde_uuid uuid NOT NULL,
+    stde_name text COLLATE pg_catalog."default" NOT NULL,
+    stde_definition json NOT NULL,
+    CONSTRAINT standard_elements_pkey PRIMARY KEY (stde_uuid)
 )
 
 TABLESPACE pg_default;
 
-ALTER TABLE IF EXISTS public."STANDARD_ELEMENTS"
+ALTER TABLE IF EXISTS public.standard_elements
     OWNER to postgres;
 
-COMMENT ON TABLE public."STANDARD_ELEMENTS"
+COMMENT ON TABLE public.standard_elements
     IS 'Stores definitions for all standard elements.';
