@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { SimpleGrid, Box } from "@chakra-ui/react";
+import { SimpleGrid, Box, Center, Text } from "@chakra-ui/react";
 import DocumentCard from "./DocumentCard";
 
 const DocumentLibrary = () => {
+    // this is temporary and will be replaced with fetch
     const [documents, setDocuments] = useState([
         {
             uuid: "1",
@@ -26,20 +27,37 @@ const DocumentLibrary = () => {
         },
     ]);
     return (
-        <Box p="3%">
-            <SimpleGrid columns={{ sm: 2, md: 3, lg: 4 }} spacing="40px">
-                {documents.map((doc) => (
-                    <Box key={doc.uuid}>
-                        <DocumentCard
-                            key={doc.uuid}
-                            docName={doc.name}
-                            uploadDate={doc.uploadDate}
-                            uuid={doc.uuid}
-                        />
-                    </Box>
-                ))}
-            </SimpleGrid>
-        </Box>
+        <Center>
+            <Box m="10px">
+                <Box
+                    p="80px"
+                    border="outset"
+                    borderWidth="2px"
+                    borderColor="lightgray"
+                    borderRadius={14}
+                >
+                    {documents.length > 0 ? (
+                        <SimpleGrid
+                            columns={{ sm: 2, md: 3, lg: 4 }}
+                            spacing="40px"
+                        >
+                            {documents.map((doc) => (
+                                <Box key={doc.uuid}>
+                                    <DocumentCard
+                                        key={doc.uuid}
+                                        docName={doc.name}
+                                        uploadDate={doc.uploadDate}
+                                        uuid={doc.uuid}
+                                    />
+                                </Box>
+                            ))}
+                        </SimpleGrid>
+                    ) : (
+                        <Text>No Uploaded Documents...</Text>
+                    )}
+                </Box>
+            </Box>
+        </Center>
     );
 };
 

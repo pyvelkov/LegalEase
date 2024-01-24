@@ -10,6 +10,7 @@ import {
     Heading,
     Center,
     HStack,
+    IconButton,
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 
@@ -38,9 +39,9 @@ const DocumentCard = ({ docName, uploadDate, uuid }) => {
                             Fill In
                         </Button>
                         <Center>
-                            <DeleteIcon
-                                as="button"
-                                color="red.500"
+                            <IconButton
+                                icon={<DeleteIcon color="red.500" />}
+                                bg="transparent"
                                 onClick={() => {
                                     console.log("delete");
                                 }}
