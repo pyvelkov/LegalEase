@@ -1,24 +1,25 @@
 import { useDropzone } from "react-dropzone";
-import { Box, Text, Center } from "@chakra-ui/react";
+import { Box, Text, Center, Button } from "@chakra-ui/react";
 import { v4 as uuidv4 } from "uuid";
 
 const DropZone = () => {
     const onDrop = async (acceptedFiles) => {
         try {
-            const formData = new FormData();
-            formData.append("templateFile", acceptedFiles[0]);
-            formData.append("templateName", acceptedFiles[0].name);
+            //const formData = new FormData();
+            //formData.append("templateFile", acceptedFiles[0]);
+            //formData.append("templateName", acceptedFiles[0].name);
 
             const response = await fetch(
-                `${import.meta.env.VITE_SERVER_URL}/template/${uuidv4()}`,
+                `${import.meta.env.VITE_SERVER_URL}/template/e2677ed7-57a8-40f5-b2ba-285948f7b732`,
                 {
-                    method: "POST",
-                    body: formData,
+                    method: "GET",
+                    //body: formData,
                 }
             );
 
             if (response.ok) {
                 console.log("Server got the file");
+                console.log(response);
             } else {
                 console.log(
                     "Something went wrong with file uploading (Server-side)."
@@ -55,6 +56,13 @@ const DropZone = () => {
                         : `Drag and drop document here or click to select it! (docx, pdf, image)`}
                 </Text>
             </Box>
+            <Button
+                    variant="outline"
+                    _hover={{ bg: "teal.700", borderColor: "teal.700" }}
+                    onClick={onDrop}
+                >
+                    Create account
+                </Button>
         </Center>
     );
 };
