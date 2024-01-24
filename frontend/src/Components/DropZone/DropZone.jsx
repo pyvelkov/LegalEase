@@ -19,7 +19,6 @@ const DropZone = () => {
 
             if (response.ok) {
                 console.log("Server got the file");
-                console.log(response);
             } else {
                 console.log(
                     "Something went wrong with file uploading (Server-side)."
