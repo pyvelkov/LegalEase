@@ -37,7 +37,7 @@ router.get("/", async (req, res) => {
         await dbClient.end();
     }
 
-    // Return 404 if no records found
+    // Return 204 if no records found
     dbRes.rowCount > 0
         ? res.status(200).json({ templates: dbRes.rows })
         : res.status(204).send();
