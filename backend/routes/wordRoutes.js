@@ -8,9 +8,12 @@ const __dirname = dirname(__filename);
 const router = Router();
 
 router.post("/editWordFile", (req, res) => {
-    
-    const doc = getTemplateFromPath(resolve(__dirname,
-        "../files/templates/Retainer Agreement - Corporate (for Corporation).docx"));
+    const doc = getTemplateFromPath(
+        resolve(
+            __dirname,
+            "../files/templates/Retainer Agreement - Corporate (for Corporation).docx"
+        )
+    );
 
     const data = req.body;
 
