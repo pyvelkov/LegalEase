@@ -51,7 +51,7 @@ const DropZone = () => {
                 height="100px"
             >
                 <input {...getInputProps()} />
-                <Text>
+                <Box>
                     {isDragActive ? (
                         <Center>
                             <Text>{`Drop the document here!`}</Text>
@@ -68,7 +68,7 @@ const DropZone = () => {
                             </Center>
                         </>
                     )}
-                </Text>
+                </Box>
             </Box>
         </Center>
     );
