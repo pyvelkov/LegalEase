@@ -1,8 +1,6 @@
-import { readFileSync, writeFileSync } from "fs";
 import Docxtemplater from "docxtemplater";
 import PizZip from "pizzip";
 
-// TODO: make this work with a file buffer instead of path
 // Gets template file from path and returns a new DOCXTemplater object.
 // ==> Consider adding optional parameters for docxtemplater options.
 const getTemplateFromFile = (file) => {
@@ -83,7 +81,6 @@ const processTemplateFields = (uniqueFields) => {
     return fields;
 };
 
-// TODO: Call from template/:uuid/tags route
 // Returns all unique tags from the given template
 const getTemplateFields = (templateFile) => {
 
@@ -100,5 +97,4 @@ const getTemplateFields = (templateFile) => {
     return processTemplateFields(uniqueDocFields);
 };
 
-// TODO: change this to export function that returns tags instead
-export { processTemplateFields, getTemplateFields };
+export { getTemplateFields };
