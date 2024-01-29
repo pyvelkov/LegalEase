@@ -103,7 +103,7 @@ router.get("/:uuid", async (req, res) => {
         templateDateCreated = Date.now(); // Divide by 100 later to convert ms to s
         
     const templateSqlQuery = {
-        text: 'insert into public.TEMPLATES values ($1, $2, $3, to_timestamp($4/1000.0))',
+        text: "insert into public.TEMPLATES values ($1, $2, $3, to_timestamp($4/1000.0))",
         values: [templateUuid, templateName, templatePath, templateDateCreated],
     };
 
@@ -112,7 +112,7 @@ router.get("/:uuid", async (req, res) => {
 
     // Construct TEMPLATE_FIELDS SQL query to insert new template fields record.
     const templateFieldSqlQuery = {
-        text: 'insert into public.TEMPLATE_FIELDS values ($1, $2)',
+        text: "insert into public.TEMPLATE_FIELDS values ($1, $2)",
         values: [templateUuid, JSON.stringify(templateFields)],
     };
 
