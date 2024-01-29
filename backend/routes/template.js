@@ -94,7 +94,7 @@ router.get("/:uuid", async (req, res) => {
     }
     catch(error){
         console.error(error);
-        res.status(500).send("Error uploading template file to GCS.")
+        res.status(500).send("Error uploading template file to GCS.");
     }
 
     // Construct TEMPLATE SQL query to insert new template record
