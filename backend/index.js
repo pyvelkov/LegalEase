@@ -32,7 +32,7 @@ app.get("/", (req, res) => {
 
 // Use the wordRoutes for /editWordFile route
 app.use("/wordRoutes", wordRoutes);
-app.use("/template", templateRoutes);
+app.use("/templates", templateRoutes);
 
 // test routes - need to delete after
 app.use("/test", testRoutes);
