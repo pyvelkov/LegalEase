@@ -1,6 +1,7 @@
 import { useDropzone } from "react-dropzone";
 import { Box, Text, Center } from "@chakra-ui/react";
 import { v4 as uuidv4 } from "uuid";
+import { uploadTemplate } from "../../util/API/fetchApi";
 
 const DropZone = () => {
     const onDrop = async (acceptedFiles) => {
@@ -9,14 +10,7 @@ const DropZone = () => {
             formData.append("templateFile", acceptedFiles[0]);
             formData.append("templateName", acceptedFiles[0].name);
 
-            const response = await fetch(
-                `${import.meta.env.VITE_SERVER_URL}/template/${uuidv4()}`,
-                {
-                    method: "POST",
-                    body: formData,
-                }
-            );
-
+            const response = await uploadTemplate(uuidv4(), formData);
             if (response.ok) {
                 console.log("Server got the file");
             } else {
@@ -24,10 +18,6 @@ const DropZone = () => {
                     "Something went wrong with file uploading (Server-side)."
                 );
             }
-
-            // acceptedFiles.forEach((file) => {
-            //     console.log("Uploaded file:", file);
-            // });
         } catch (err) {
             console.log("Error uploading file: ", err);
         }

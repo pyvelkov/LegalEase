@@ -2,12 +2,12 @@ const makeRequest = async (
     url,
     method = "GET",
     body = null,
-    customHeaders = {},
-    contentType = "application/json"
+    customHeaders = {}
+    // contentType = "application/json"
 ) => {
     try {
         const headers = {
-            "Content-Type": contentType,
+            // "Content-Type": contentType,
             ...customHeaders,
         };
 
@@ -16,7 +16,11 @@ const makeRequest = async (
             {
                 method,
                 headers,
-                body: body ? JSON.stringify(body) : null,
+                body: body
+                    ? body instanceof FormData
+                        ? body
+                        : JSON.stringify(body)
+                    : null,
             }
         );
 
@@ -33,9 +37,11 @@ const makeRequest = async (
         if (responseType.includes("application/json")) {
             // return json
             return await response.json();
-        } else {
+        } else if (responseType.includes("text/plain")) {
             // return plain text as response if none of the above check
             return await response.text();
+        } else {
+            return await response;
         }
     } catch (err) {
         console.error("Error making the request:", err.message);

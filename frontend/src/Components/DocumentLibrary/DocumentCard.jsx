@@ -16,7 +16,7 @@ import { DeleteIcon } from "@chakra-ui/icons";
 
 const DocumentCard = ({ docName, uploadDate, uuid }) => {
     return (
-        <Card maxW="sm">
+        <Card maxW="sm" key={uuid}>
             <CardBody>
                 <Image
                     src="/DocPlaceholder.png"

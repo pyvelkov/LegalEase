@@ -1,8 +1,9 @@
 import makeRequest from "../fetchUtil";
 
-export const getTest = async () => {
-    return await makeRequest("test/testGet");
+export const uploadTemplate = async (UUID, payload) => {
+    return await makeRequest(`templates/${UUID}`, "POST", payload);
 };
-export const postTest = async (payload) => {
-    return await makeRequest("test/testPost", "POST", payload);
+
+export const getUploadedDocuments = async () => {
+    return await makeRequest("templates/");
 };
