@@ -1,12 +1,32 @@
 import express from "express";
 import bodyParser from "body-parser";
 import wordRoutes from "./routes/wordRoutes.js";
-import templateRoutes from "./routes/template.js";
-import testRoutes from "./routes/testRoutes.js";
+import templatesRoutes from "./routes/templates.js";
+import templatesFillRoutes from "./routes/templatesFill.js";
 import dotenv from "dotenv";
 import cors from "cors";
 dotenv.config();
+
+// MAIN APP ROUTER
 const app = express();
+
+// SUB ROUTERS
+const templatesRouter = templatesRoutes; // /template/
+const templatesFillRouter = templatesFillRoutes; // /template/:uuid/filled
+
+// MAIN APP ROUTER CONFIG
+//app.use("/wordRoutes", wordRoutes);
+app.use("/templates", templatesRouter);
+
+// SUB ROUTERS CONFIG
+// ------------------
+// Template router config
+templatesRouter.use("/:templateId/filled", templatesFillRouter);
+
+// PING ROUTE
+app.get("/", (req, res) => {
+    res.json({ ping: "pong" });
+});
 
 const originEnvVar =
     process.env.NODE_ENV == "production"
@@ -22,21 +42,10 @@ app.use(
         credentials: true,
     })
 );
-const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
-app.get("/", (req, res) => {
-    res.json({ ping: "pong" });
-});
-
-// Use the wordRoutes for /editWordFile route
-app.use("/wordRoutes", wordRoutes);
-app.use("/templates", templateRoutes);
-
-// test routes - need to delete after
-app.use("/test", testRoutes);
-
+const port = process.env.PORT;
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
 });
