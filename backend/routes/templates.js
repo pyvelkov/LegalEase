@@ -33,6 +33,7 @@ router.get("/", async (req, res) => {
         res.status(500).send(
             "Error getting ALL templates metadata from DB: " + error
         );
+        return;
     } finally {
         await dbClient.end();
     }
@@ -46,7 +47,7 @@ router.get("/", async (req, res) => {
 /* =================
  * Get specific template metadata (fields, date, etc.)
  * ================= */
-router.get("/:uuid", async (req, res) => {
+router.get("/:templateId", async (req, res) => {
     // Establish new database connection
     const dbClient = new pg.Client();
     await dbClient.connect();
@@ -69,6 +70,7 @@ router.get("/:uuid", async (req, res) => {
         res.status(500).send(
             "Error getting template metadata from DB: " + error
         );
+        return;
     } finally {
         await dbClient.end();
     }
@@ -82,59 +84,72 @@ router.get("/:uuid", async (req, res) => {
 /* =================
  * Upload a template
  * ================= */
-router.post("/:uuid", fileUpload.single("templateFile"), async (req, res) => {
-    const templatePath = `templates/${req.params.uuid}/${req.file.originalname}`;
-    const templateFile = req.file.buffer;
+router.post(
+    "/:templateId",
+    fileUpload.single("templateFile"),
+    async (req, res) => {
+        const templatePath = `templates/${req.params.uuid}/${req.file.originalname}`;
+        const templateFile = req.file.buffer;
 
-    // Create new storage client for GCS and upload file to path in bucket
-    try {
-        const storageClient = new storage.Storage();
-        await storageClient
-            .bucket("legalease")
-            .file(templatePath)
-            .save(Readable.from(templateFile));
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Error uploading template file to GCS.");
+        // Create new storage client for GCS and upload file to path in bucket
+        try {
+            const storageClient = new storage.Storage();
+            await storageClient
+                .bucket("legalease")
+                .file(templatePath)
+                .save(Readable.from(templateFile));
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Error uploading template file to GCS.");
+            return;
+        }
+
+        // Construct TEMPLATE SQL query to insert new template record
+        const templateUuid = req.params.uuid,
+            templateName = req.body.templateName,
+            templateDateCreated = Date.now(); // Divide by 100 later to convert ms to s
+
+        const templateSqlQuery = {
+            text: "insert into public.TEMPLATES values ($1, $2, $3, to_timestamp($4/1000.0))",
+            values: [
+                templateUuid,
+                templateName,
+                templatePath,
+                templateDateCreated,
+            ],
+        };
+
+        // Get all available template fields
+        const templateFields = getTemplateFields(templateFile);
+
+        // Construct TEMPLATE_FIELDS SQL query to insert new template fields record.
+        const templateFieldSqlQuery = {
+            text: "insert into public.TEMPLATE_FIELDS values ($1, $2)",
+            values: [templateUuid, JSON.stringify(templateFields)],
+        };
+
+        // Establish new database connection
+        const dbClient = new pg.Client();
+        await dbClient.connect();
+
+        // Execute queries in database and wait for success/fail response
+        try {
+            const templateQueryRes = await dbClient.query(templateSqlQuery);
+            const templateFieldQueryRes = await dbClient.query(
+                templateFieldSqlQuery
+            );
+            res.status(200).send("Template uploaded successfully.");
+        } catch (error) {
+            // Consider adding code here to delete template file if DB write failed.
+            console.error(error);
+            res.status(500).send(
+                "Error writing template records to DB: " + error
+            );
+            return;
+        } finally {
+            await dbClient.end();
+        }
     }
-
-    // Construct TEMPLATE SQL query to insert new template record
-    const templateUuid = req.params.uuid,
-        templateName = req.body.templateName,
-        templateDateCreated = Date.now(); // Divide by 100 later to convert ms to s
-
-    const templateSqlQuery = {
-        text: "insert into public.TEMPLATES values ($1, $2, $3, to_timestamp($4/1000.0))",
-        values: [templateUuid, templateName, templatePath, templateDateCreated],
-    };
-
-    // Get all available template fields
-    const templateFields = getTemplateFields(templateFile);
-
-    // Construct TEMPLATE_FIELDS SQL query to insert new template fields record.
-    const templateFieldSqlQuery = {
-        text: "insert into public.TEMPLATE_FIELDS values ($1, $2)",
-        values: [templateUuid, JSON.stringify(templateFields)],
-    };
-
-    // Establish new database connection
-    const dbClient = new pg.Client();
-    await dbClient.connect();
-
-    // Execute queries in database and wait for success/fail response
-    try {
-        const templateQueryRes = await dbClient.query(templateSqlQuery);
-        const templateFieldQueryRes = await dbClient.query(
-            templateFieldSqlQuery
-        );
-        res.status(200).send("Template uploaded successfully.");
-    } catch (error) {
-        // Consider adding code here to delete template file if DB write failed.
-        console.error(error);
-        res.status(500).send("Error writing template records to DB: " + error);
-    } finally {
-        await dbClient.end();
-    }
-});
+);
 
 export default router;
