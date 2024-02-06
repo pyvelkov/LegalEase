@@ -1,46 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Box, Input, Button, FormControl, FormLabel } from "@chakra-ui/react";
 
 const Dashboard = () => {
     // Set initial empty state
     const [formData, setFormData] = useState({});
-
-    const getAllFieldNames = () => {
-        try {
-            fetch(
-                `${import.meta.env.VITE_SERVER_URL}/wordRoutes/templateTags`,
-                {
-                    method: "GET",
-                    mode: "cors",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            )
-                .then((res) => {
-                    console.log(res);
-                    return res.json();
-                })
-                .then((data) => {
-                    var tagState = {};
-
-                    // Re-structure data from response
-                    data.forEach((tag) => {
-                        tagState[tag.tagName] = {
-                            fieldValue: "",
-                            fieldType: tag.tagType,
-                        };
-                    });
-
-                    setFormData(tagState);
-                });
-        } catch (error) {
-            console.error("Error getting template tags:", error);
-        }
-    };
-
-    // Get all unique tags from the template to create input fields for them
-    useEffect(getAllFieldNames, []);
 
     const handleChange = (e) => {
         setFormData({
@@ -49,26 +12,26 @@ const Dashboard = () => {
         });
     };
 
-    const handleEditWordFile = async () => {
-        try {
-            const response = await fetch(
-                `${import.meta.env.VITE_SERVER_URL}/wordRoutes/editWordFile`,
-                {
-                    method: "POST",
-                    mode: "cors",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(formData),
-                }
-            );
+    // const handleEditWordFile = async () => {
+    //     try {
+    //         const response = await fetch(
+    //             `${import.meta.env.VITE_SERVER_URL}/wordRoutes/editWordFile`,
+    //             {
+    //                 method: "POST",
+    //                 mode: "cors",
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                 },
+    //                 body: JSON.stringify(formData),
+    //             }
+    //         );
 
-            const result = await response.text();
-            console.log(result);
-        } catch (error) {
-            console.error("Error editing Word file:", error);
-        }
-    };
+    //         const result = await response.text();
+    //         console.log(result);
+    //     } catch (error) {
+    //         console.error("Error editing Word file:", error);
+    //     }
+    // };
 
     return (
         <>
@@ -104,8 +67,8 @@ const Dashboard = () => {
                     )
                 }
 
-                <Button mt={4} colorScheme="blue" onClick={handleEditWordFile}>
-                    Create Document
+                <Button mt={4} colorScheme="blue">
+                    Edit Document
                 </Button>
             </Box>
         </>

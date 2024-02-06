@@ -1,13 +1,22 @@
+/**
+ * Generalized function for handling different kinds of fetch requests.
+ *
+ * @param {string} url {the url to be used in the route for backend}
+ * @param {string} [method="GET"] {the fetch method as a string}
+ * @param {RequestInit.body} [body=null] {the body (if any) as a payload}
+ * @param {Object} [customHeaders={}]
+ * @return {Response} {The response from the backend}
+ */
 const makeRequest = async (
     url,
     method = "GET",
     body = null,
-    customHeaders = {},
-    contentType = "application/json"
+    customHeaders = {}
+    // contentType = "application/json"
 ) => {
     try {
         const headers = {
-            "Content-Type": contentType,
+            // "Content-Type": contentType,
             ...customHeaders,
         };
 
@@ -16,7 +25,11 @@ const makeRequest = async (
             {
                 method,
                 headers,
-                body: body ? JSON.stringify(body) : null,
+                body: body
+                    ? body instanceof FormData
+                        ? body
+                        : JSON.stringify(body)
+                    : null,
             }
         );
 
@@ -33,9 +46,11 @@ const makeRequest = async (
         if (responseType.includes("application/json")) {
             // return json
             return await response.json();
-        } else {
+        } else if (responseType.includes("text/plain")) {
             // return plain text as response if none of the above check
             return await response.text();
+        } else {
+            return await response;
         }
     } catch (err) {
         console.error("Error making the request:", err.message);

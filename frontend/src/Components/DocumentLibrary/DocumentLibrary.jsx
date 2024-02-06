@@ -1,31 +1,17 @@
 import { useState } from "react";
 import { SimpleGrid, Box, Center, Text } from "@chakra-ui/react";
 import DocumentCard from "./DocumentCard";
+import { getUploadedDocuments } from "../../util/API/fetchApi";
 
+/**
+ * Generates a library of uploaded documents
+ */
 const DocumentLibrary = () => {
-    // this is temporary and will be replaced with fetch
-    const [documents, setDocuments] = useState([
-        {
-            uuid: "1",
-            name: "doc1",
-            uploadDate: "01/21/2024",
-        },
-        {
-            uuid: "2",
-            name: "doc2",
-            uploadDate: "02/21/2024",
-        },
-        {
-            uuid: "3",
-            name: "doc3",
-            uploadDate: "03/21/2024",
-        },
-        {
-            uuid: "4",
-            name: "doc4",
-            uploadDate: "04/21/2024",
-        },
-    ]);
+    const [documents, setDocuments] = useState(async () => {
+        const response = await getUploadedDocuments();
+        setDocuments(response.templates);
+    });
+
     return (
         <Center>
             <Box m="10px">
@@ -42,12 +28,12 @@ const DocumentLibrary = () => {
                             spacing="40px"
                         >
                             {documents.map((doc) => (
-                                <Box key={doc.uuid}>
+                                <Box key={doc.tmp_uuid}>
                                     <DocumentCard
-                                        key={doc.uuid}
-                                        docName={doc.name}
-                                        uploadDate={doc.uploadDate}
-                                        uuid={doc.uuid}
+                                        key={doc.tmp_uuid}
+                                        docName={doc.tmp_name}
+                                        uploadDate={doc.tmp_date_created}
+                                        uuid={doc.tmp_uuid}
                                     />
                                 </Box>
                             ))}

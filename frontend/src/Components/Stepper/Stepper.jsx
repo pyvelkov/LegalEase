@@ -12,6 +12,12 @@ import {
     StepSeparator,
 } from "@chakra-ui/react";
 
+/**
+ * Generates a generalized stepper component to mark the progress of templating a document
+ *
+ * @param {Object} steps {Object containing the different steps properties}
+ * @return {*}
+ */
 const StepperT = ({ steps }) => {
     const [activeStep, setActiveStep] = useState({
         index: 1,
