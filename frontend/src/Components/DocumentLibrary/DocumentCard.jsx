@@ -12,8 +12,16 @@ import {
     HStack,
     IconButton,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import { DeleteIcon } from "@chakra-ui/icons";
 
+/**
+ * Generates a document card with the proper image, name, upload date and buttons (with UUID)
+ *
+ * @param {string} docName {The name of the uploaded document}
+ * @param {Date} docName {The date of the uploaded document}
+ * @param {UUID} uuid {the uuid of the uploaded document, used for info retrieval}
+ */
 const DocumentCard = ({ docName, uploadDate, uuid }) => {
     return (
         <Card maxW="sm" key={uuid}>
@@ -35,9 +43,11 @@ const DocumentCard = ({ docName, uploadDate, uuid }) => {
             <Center>
                 <CardFooter>
                     <HStack spacing="10">
-                        <Button variant="solid" colorScheme="blue">
-                            Fill In
-                        </Button>
+                        <Link to={`/filltemplate/${uuid}`}>
+                            <Button variant="solid" colorScheme="blue">
+                                Fill In
+                            </Button>
+                        </Link>
                         <Center>
                             <IconButton
                                 icon={<DeleteIcon color="red.500" />}

@@ -1,3 +1,12 @@
+/**
+ * Generalized function for handling different kinds of fetch requests.
+ *
+ * @param {string} url {the url to be used in the route for backend}
+ * @param {string} [method="GET"] {the fetch method as a string}
+ * @param {RequestInit.body} [body=null] {the body (if any) as a payload}
+ * @param {Object} [customHeaders={}]
+ * @return {Response} {The response from the backend}
+ */
 const makeRequest = async (
     url,
     method = "GET",

@@ -1,29 +1,17 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SimpleGrid, Box, Center, Text } from "@chakra-ui/react";
 import DocumentCard from "./DocumentCard";
 import { getUploadedDocuments } from "../../util/API/fetchApi";
 
+/**
+ * Generates a library of uploaded documents
+ */
 const DocumentLibrary = () => {
-    // this is temporary and will be replaced with fetch
     const [documents, setDocuments] = useState(async () => {
         const response = await getUploadedDocuments();
-        console.log(response);
         setDocuments(response.templates);
     });
 
-    // commented out for now. will probably need to pass up to parents so tags can be sent to next page
-    // or alternatively use redux/context to store tags
-    // const getDocuments = async () => {
-    //     const response = await getUploadedDocuments();
-    //     console.log(response);
-    //     setDocuments(response.templates);
-    // };
-
-    useEffect(() => {
-        // getDocuments();
-    }, []);
-
-    // useEffect(getDocuments, [documents]);
     return (
         <Center>
             <Box m="10px">

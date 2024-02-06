@@ -3,7 +3,17 @@ import { Box, Text, Center } from "@chakra-ui/react";
 import { v4 as uuidv4 } from "uuid";
 import { uploadTemplate } from "../../util/API/fetchApi";
 
+/**
+ * Generates the drop box for uploading files
+ *
+ * @return {*}
+ */
 const DropZone = () => {
+    /**
+     * onDrop handles the uploading of document files to the server
+     *
+     * @param {File} acceptedFiles {the uploaded file with all of its information}
+     */
     const onDrop = async (acceptedFiles) => {
         try {
             const formData = new FormData();
