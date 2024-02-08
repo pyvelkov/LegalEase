@@ -3,7 +3,7 @@ import Trustee from "./Trustee";
 const Trustees = () => {
     return (
         <>
-            <Box bg="#edf3f8">
+            <Box bg="#edf3f8" _dark={{ bg: "gray.800" }}>
                 <Center>
                     <Heading
                         as="h1"
