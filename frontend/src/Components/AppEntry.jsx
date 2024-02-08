@@ -1,4 +1,4 @@
-import Dashboard from "./Dashboard/Dashboard";
+import Landing from "../pages/Landing/Landing";
 
 /**
  * Generates the Dashboard, will be used to encapsulate the child components behind an auth system
@@ -6,7 +6,7 @@ import Dashboard from "./Dashboard/Dashboard";
 const AppEntry = () => {
     return (
         <>
-            <Dashboard />
+            <Landing />
         </>
     );
 };
