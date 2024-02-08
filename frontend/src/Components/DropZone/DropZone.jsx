@@ -41,6 +41,7 @@ const DropZone = () => {
         <Center>
             <Box
                 {...getRootProps()}
+                mb={10}
                 p={6}
                 borderWidth={2}
                 borderRadius="lg"
