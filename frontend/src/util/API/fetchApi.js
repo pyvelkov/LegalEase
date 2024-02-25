@@ -29,3 +29,15 @@ export const getUploadedDocuments = async () => {
 export const getSpecificTemplate = async (UUID) => {
     return await makeRequest(`templates/${UUID}`);
 };
+
+export /**
+ * Request to send the filled data of unique fields in each uploaded document from "templates" table.
+ * Once filled sends file back to frontend.
+ *
+ * @param {string} UUID {the generated UUID from the frontend}
+ * @param {FormData} payload {the body payload with filled in field values}
+ * @return {Response} returns the filled in file as a reabable stream that is turned into a blob in frontend.
+ */
+const fillDownloadTemplate = async (UUID, payload) => {
+    return await makeRequest(`templates/${UUID}/filled`, "POST", payload);
+};

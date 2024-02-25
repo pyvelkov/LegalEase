@@ -1,23 +1,13 @@
-import StepperT from "../../Components/Stepper/Stepper";
+import DocumentLibrary from "../../Components/DocumentLibrary/DocumentLibrary";
 import FileUpload from "./FileUpload";
 
 /**
  * Generates the file upload component or DropZone to upload files
  */
 const FillTemplate = () => {
-    // the steps will display the different step/components on each click
-    const steps = [
-        { title: "Upload Document", description: "Upload or select document" },
-        { title: "Add Content", description: "Fill in fields" },
-        {
-            title: "Finalize",
-            description: "Review and download",
-        },
-    ];
-
     return (
         <>
-            <StepperT steps={steps} />
+            <DocumentLibrary />
             <FileUpload />
         </>
     );

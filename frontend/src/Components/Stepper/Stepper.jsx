@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
     Stepper,
     Step,
@@ -18,17 +17,12 @@ import {
  * @param {Object} steps {Object containing the different steps properties}
  * @return {*}
  */
-const StepperT = ({ steps }) => {
-    const [activeStep, setActiveStep] = useState({
-        index: 1,
-        count: steps.length,
-    });
-
+const StepperT = ({ steps, activeStep, action }) => {
     return (
         <Box m={10}>
             <Stepper size="md" index={activeStep}>
                 {steps.map((step, index) => (
-                    <Step key={index} onClick={() => setActiveStep(index)}>
+                    <Step key={index} onClick={() => action(index)}>
                         <StepIndicator>
                             <StepStatus
                                 complete={<StepIcon />}
