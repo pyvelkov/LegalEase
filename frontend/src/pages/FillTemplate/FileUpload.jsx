@@ -1,4 +1,3 @@
-import DocumentLibrary from "../../Components/DocumentLibrary/DocumentLibrary";
 import DropZone from "../../Components/DropZone/DropZone";
 import { Box, Divider, AbsoluteCenter } from "@chakra-ui/react";
 
@@ -8,7 +7,6 @@ import { Box, Divider, AbsoluteCenter } from "@chakra-ui/react";
 const FileUpload = () => {
     return (
         <>
-            <DocumentLibrary />
             <Box position="relative" padding="50px">
                 <Divider />
                 <AbsoluteCenter bg="light" px="40">

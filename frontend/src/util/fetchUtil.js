@@ -40,6 +40,7 @@ const makeRequest = async (
 
         // Check the Content-Type of the response
         const responseType = response.headers.get("Content-Type") || "";
+        const contentDisp = response.headers.get("Content-disposition") || "";
 
         // types of returns based on headers sent.
         // need to add return types as we go.
@@ -47,9 +48,13 @@ const makeRequest = async (
             // return json
             return await response.json();
         } else if (responseType.includes("text/plain")) {
+            if (contentDisp.includes("attachment")) {
+                return await response;
+            }
             // return plain text as response if none of the above check
             return await response.text();
         } else {
+            console.log("anything else:");
             return await response;
         }
     } catch (err) {

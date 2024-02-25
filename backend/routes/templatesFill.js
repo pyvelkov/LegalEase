@@ -17,6 +17,7 @@ router.get("/", async (req, res) => {
 // Fill the specified template with values
 router.post("/", upload.none(), async (req, res) => {
     // Configure SQL query to select all required template metadata
+
     const templateSqlQuery = {
         text: "select TMP_UUID, TMP_NAME, TMP_PATH \
                 from public.TEMPLATES \
@@ -73,9 +74,9 @@ router.post("/", upload.none(), async (req, res) => {
     const responseStream = new stream.PassThrough();
     responseStream.end(filledTemplateFile);
 
-    res.set("Content-disposition", "attachment; filename=" + req.body.fileName);
     res.set("Content-Type", "text/plain");
-
+    res.set("Content-disposition", "attachment; filename=" + req.body.fileName);
+    res.set("Access-Control-Expose-Headers", "Content-disposition");
     responseStream.pipe(res);
 });
 

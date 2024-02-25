@@ -58,7 +58,7 @@ router.get("/:templateId", async (req, res) => {
                 from public.TEMPLATES join public.TEMPLATE_FIELDS \
                 on TMP_UUID = TMPF_TMP_UUID \
                 where TMP_UUID = CAST ($1 as UUID)",
-        values: [req.params.uuid],
+        values: [req.params.templateId],
     };
 
     // Execute queries in database and wait for success/fail response
@@ -88,7 +88,7 @@ router.post(
     "/:templateId",
     fileUpload.single("templateFile"),
     async (req, res) => {
-        const templatePath = `templates/${req.params.uuid}/${req.file.originalname}`;
+        const templatePath = `templates/${req.params.templateId}/${req.file.originalname}`;
         const templateFile = req.file.buffer;
 
         // Create new storage client for GCS and upload file to path in bucket
@@ -105,7 +105,7 @@ router.post(
         }
 
         // Construct TEMPLATE SQL query to insert new template record
-        const templateUuid = req.params.uuid,
+        const templateUuid = req.params.templateId,
             templateName = req.body.templateName,
             templateDateCreated = Date.now(); // Divide by 100 later to convert ms to s
 
