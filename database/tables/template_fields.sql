@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS public.template_fields
     CONSTRAINT templates_fk FOREIGN KEY (tmpf_tmp_uuid)
         REFERENCES public.templates (tmp_uuid) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+        ON DELETE CASCADE
 )
 
 TABLESPACE pg_default;

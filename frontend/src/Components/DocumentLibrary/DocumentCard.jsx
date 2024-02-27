@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { DeleteIcon } from "@chakra-ui/icons";
+import { deleteTemplate } from "../../util/API/fetchApi";
 
 /**
  * Generates a document card with the proper image, name, upload date and buttons (with UUID)
@@ -53,7 +54,7 @@ const DocumentCard = ({ docName, uploadDate, uuid }) => {
                                 icon={<DeleteIcon color="red.500" />}
                                 bg="transparent"
                                 onClick={() => {
-                                    console.log("delete");
+                                    deleteTemplate(uuid);
                                 }}
                             />
                         </Center>

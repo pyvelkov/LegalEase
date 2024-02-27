@@ -152,4 +152,49 @@ router.post(
     }
 );
 
+router.delete("/:templateId", async (req, res) => {
+    const templatePath = `templates/${req.params.templateId}/`;
+
+    // Create new storage client for GCS and delete file in bucket
+    try {
+        const storageClient = new storage.Storage();
+        await storageClient.bucket("legalease").deleteFiles({
+            prefix: templatePath,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error deleting template file from GCS.");
+        return;
+    }
+
+    // Construct TEMPLATE SQL query to insert new template record
+    const templateUuid = req.params.templateId;
+    const templateDeleteSqlQuery = {
+        text: "delete from public.TEMPLATES where tmp_uuid = $1",
+        values: [templateUuid],
+    };
+
+    // Establish new database connection
+    const dbClient = new pg.Client();
+    await dbClient.connect();
+
+    // Execute queries in database and wait for success/fail response
+    let templateQueryRes;
+    try {
+        templateQueryRes = await dbClient.query(templateDeleteSqlQuery);
+    } catch (error) {
+        // Consider adding code here to delete template file if DB write failed.
+        console.error(error);
+        res.status(500).send("Error deleting template record in DB: " + error);
+        return;
+    } finally {
+        await dbClient.end();
+    }
+
+    // Return 404 if no records deleted, otherwise should only be 1 record
+    templateQueryRes.rowCount > 0
+        ? res.status(200).send("Template deleted successfully.")
+        : res.status(404).send();
+});
+
 export default router;
