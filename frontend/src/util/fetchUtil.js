@@ -54,7 +54,6 @@ const makeRequest = async (
             // return plain text as response if none of the above check
             return await response.text();
         } else {
-            console.log("anything else:");
             return await response;
         }
     } catch (err) {

@@ -7,22 +7,33 @@ import { getUploadedDocuments } from "../../util/API/fetchApi";
  * Generates a library of uploaded documents
  */
 const DocumentLibrary = () => {
-    const [documents, setDocuments] = useState(null);
+    const [documents, setDocuments] = useState([{}]);
 
     /**
      * Fetching document data when UUID changes or mounts
      */
+    const fetchDocument = async () => {
+        try {
+            const response = await getUploadedDocuments();
+            console.log(response.templates);
+            setDocuments(response.templates);
+        } catch (error) {
+            setDocuments([]);
+            console.error("Error fetching document:", error);
+        }
+    };
     useEffect(() => {
-        const fetchDocument = async () => {
-            try {
-                const response = await getUploadedDocuments();
-                setDocuments(response.templates);
-            } catch (error) {
-                console.error("Error fetching document:", error);
-            }
-        };
+        console.log("fetching init");
         fetchDocument();
     }, []);
+
+    const handleDelete = (deletedDocumentUUID) => {
+        // Filter out the deleted document to cause a re-render
+        const filteredDocuments = documents.filter(
+            (doc) => doc.tmp_uuid !== deletedDocumentUUID
+        );
+        setDocuments(filteredDocuments);
+    };
 
     return (
         <Center>
@@ -37,6 +48,7 @@ const DocumentLibrary = () => {
                 >
                     {documents && documents.length > 0 ? (
                         <SimpleGrid
+                            key="simpleGrid"
                             columns={{ sm: 2, md: 3, lg: 4 }}
                             spacing={{
                                 sm: "10px",
@@ -45,12 +57,13 @@ const DocumentLibrary = () => {
                             }}
                         >
                             {documents.map((doc) => (
-                                <Box key={doc.tmp_uuid} pt={1}>
+                                <Box key={`${doc.tmp_uuid}1`} pt={1}>
                                     <DocumentCard
                                         key={doc.tmp_uuid}
                                         docName={doc.tmp_name}
                                         uploadDate={doc.tmp_date_created}
                                         uuid={doc.tmp_uuid}
+                                        onDeleteDocument={handleDelete}
                                     />
                                 </Box>
                             ))}
