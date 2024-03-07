@@ -8,7 +8,7 @@ import { uploadTemplate } from "../../util/API/fetchApi";
  *
  * @return {*}
  */
-const DropZone = () => {
+const DropZone = ({ docUploaded }) => {
     /**
      * onDrop handles the uploading of document files to the server
      *
@@ -23,6 +23,8 @@ const DropZone = () => {
             const response = await uploadTemplate(uuidv4(), formData);
             if (response.ok) {
                 console.log("Server got the file");
+                // update the key so it forces documentLibrary to re-render
+                docUploaded();
             } else {
                 console.log(
                     "Something went wrong with file uploading (Server-side)."

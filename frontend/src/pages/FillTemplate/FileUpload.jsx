@@ -4,7 +4,7 @@ import { Box, Divider, AbsoluteCenter } from "@chakra-ui/react";
 /**
  * Generates a combined divider component with the DropZone component
  */
-const FileUpload = () => {
+const FileUpload = ({ docUploaded }) => {
     return (
         <>
             <Box position="relative" padding="50px">
@@ -13,7 +13,7 @@ const FileUpload = () => {
                     New Document
                 </AbsoluteCenter>
             </Box>
-            <DropZone />
+            <DropZone docUploaded={docUploaded} />
         </>
     );
 };
