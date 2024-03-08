@@ -1,5 +1,3 @@
-import React from "react";
-
 import {
     chakra,
     Box,
@@ -12,17 +10,25 @@ import {
     IconButton,
     CloseButton,
     Image,
+    Avatar,
+    Skeleton,
+    SkeletonCircle,
 } from "@chakra-ui/react";
 import { AiOutlineMenu } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import ToggleColorMode from "./ToggleColorMode";
+import LoginButton from "../Login/LoginButton";
+import { useAuth0 } from "@auth0/auth0-react";
+import LogoutButton from "../Login/LogoutButton";
 
 const Header = () => {
     const bg = useColorModeValue("white", "gray.800");
     const mobileNav = useDisclosure();
+    const { user, isAuthenticated, isLoading } = useAuth0();
+    console.log(user);
 
     return (
-        <React.Fragment>
+        <>
             <chakra.header
                 bg={bg}
                 w="full"
@@ -36,12 +42,6 @@ const Header = () => {
                     mx="auto"
                 >
                     <Flex>
-                        {/* <chakra.a
-                            href="/"
-                            title="Choc Home Page"
-                            display="flex"
-                            alignItems="center"
-                        > */}
                         <Link
                             to={`/`}
                             title="Home"
@@ -57,7 +57,6 @@ const Header = () => {
                                 height="80px"
                             />
                         </Link>
-                        {/* </chakra.a> */}
                     </Flex>
                     <HStack display="flex" alignItems="center" spacing={1}>
                         <HStack
@@ -69,7 +68,10 @@ const Header = () => {
                             <Button variant="ghost">Features</Button>
                             <Button variant="ghost">Pricing</Button>
                             <Button variant="ghost">About Us</Button>
-                            <Button variant="ghost">Sign in</Button>
+                            <Skeleton isLoaded={!isLoading}>
+                                <LoginButton Hstack={true} />
+                                <LogoutButton Hstack={true} />
+                            </Skeleton>
                         </HStack>
                         <Button
                             colorScheme="brand"
@@ -78,7 +80,21 @@ const Header = () => {
                         >
                             Get Started
                         </Button>
-                        <ToggleColorMode />
+                        {isAuthenticated ? (
+                            <SkeletonCircle isLoaded={!isLoading}>
+                                <Avatar
+                                    size="sm"
+                                    mx={5}
+                                    name={user.name}
+                                    src={user.picture}
+                                />
+                            </SkeletonCircle>
+                        ) : (
+                            <Avatar size="sm" ml={5} src="hhtps:brokenlink" />
+                        )}
+                        <div style={{ marginLeft: isAuthenticated ? 20 : 0 }}>
+                            <ToggleColorMode />
+                        </div>
                         <Box display={{ base: "inline-flex", md: "none" }}>
                             <IconButton
                                 display={{ base: "flex", md: "none" }}
@@ -117,9 +133,7 @@ const Header = () => {
                                 <Button w="full" variant="ghost">
                                     About Us
                                 </Button>
-                                <Button w="full" variant="ghost">
-                                    Sign in
-                                </Button>
+                                <LoginButton Hstack={false} />
                                 <CloseButton
                                     aria-label="Close menu"
                                     onClick={mobileNav.onClose}
@@ -129,7 +143,7 @@ const Header = () => {
                     </HStack>
                 </Flex>
             </chakra.header>
-        </React.Fragment>
+        </>
     );
 };
 export default Header;
