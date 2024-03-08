@@ -133,7 +133,10 @@ const Header = () => {
                                 <Button w="full" variant="ghost">
                                     About Us
                                 </Button>
-                                <LoginButton Hstack={false} />
+                                <Skeleton isLoaded={!isLoading}>
+                                    <LoginButton Hstack={false} />
+                                    <LogoutButton Hstack={false} />
+                                </Skeleton>
                                 <CloseButton
                                     aria-label="Close menu"
                                     onClick={mobileNav.onClose}
