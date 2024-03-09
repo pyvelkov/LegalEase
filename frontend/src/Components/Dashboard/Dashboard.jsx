@@ -12,27 +12,6 @@ const Dashboard = () => {
         });
     };
 
-    // const handleEditWordFile = async () => {
-    //     try {
-    //         const response = await fetch(
-    //             `${import.meta.env.VITE_SERVER_URL}/wordRoutes/editWordFile`,
-    //             {
-    //                 method: "POST",
-    //                 mode: "cors",
-    //                 headers: {
-    //                     "Content-Type": "application/json",
-    //                 },
-    //                 body: JSON.stringify(formData),
-    //             }
-    //         );
-
-    //         const result = await response.text();
-    //         console.log(result);
-    //     } catch (error) {
-    //         console.error("Error editing Word file:", error);
-    //     }
-    // };
-
     return (
         <>
             <Box p={4}>

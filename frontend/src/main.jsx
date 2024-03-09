@@ -4,13 +4,25 @@ import "./index.css";
 import App from "./App";
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import theme from "./theme/theme";
+import { Auth0Provider } from "@auth0/auth0-react";
+
+const domain = import.meta.env.VITE_APP_AUTH0_DOMAIN;
+const clientID = import.meta.env.VITE_APP_AUTH0_CLIENT_ID;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
     <React.StrictMode>
-        <ChakraProvider theme={theme}>
-            <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-            <App />
-        </ChakraProvider>
+        <Auth0Provider
+            domain={domain}
+            clientId={clientID}
+            authorizationParams={{ redirect_uri: window.location.origin }}
+        >
+            <ChakraProvider theme={theme}>
+                <ColorModeScript
+                    initialColorMode={theme.config.initialColorMode}
+                />
+                <App />
+            </ChakraProvider>
+        </Auth0Provider>
     </React.StrictMode>
 );
