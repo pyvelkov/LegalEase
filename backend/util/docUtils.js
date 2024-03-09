@@ -18,58 +18,106 @@ const getTemplateFromFile = (file) => {
 
 // Handle all tag type, name and options detection
 const processTemplateFields = (uniqueFields) => {
-    const availableFieldTypes = ["dropdown", "text", "date", "num"];
+    // All currently supported field types
+    const availableFieldTypes = [
+        "text",
+        "num",
+        "date",
+        "dropdown",
+        "multi",
+        "option",
+        "table",
+    ];
     let fields = [];
+    let commitField = false;
+
+    // Queue used to determine parent of a field when applicable
+    let parents = [];
+    let parentLevelCounter = 0;
 
     uniqueFields.map((field) => {
-        // Initialize name, type and options for each field
+        // Initialize name, type, options and dependencies for each field
         let name = "",
             type = "",
-            options = [];
+            options = [],
+            dependencies = [];
 
         // Drop curly braces at beginning and end and split by chunks
         const splitResult = field.slice(1, -1).split("_");
+        // Drop # or / at beginning of tag if present
+        type = splitResult[0].replaceAll(/[#/]/g, "");
 
-        // Determine the type of field
-        if (availableFieldTypes.includes(splitResult[0].toLowerCase())) {
-            type = splitResult[0];
-        } else {
-            // If not a standard field type
+        // If not a valid standard field type
+        if (!availableFieldTypes.includes(type.toLowerCase())) {
             type = "INVALID";
         }
 
+        // Name for all tags is everything after the tag type except invalid
+        name = type != "INVALID" ? splitResult.slice(1).join(" ") : "INVALID";
+
         // Based on the type of field, find the field name and options (if applicable)
         switch (type) {
-            // Dropdown field type is special case since it contains list of options
+            // Dropdown and multi types are special cases since they contain list of options
+            case "multi":
+            // fall through
             case "dropdown":
-                // Take the whole tag after the first type identifier section
-                // Name is everything up until first quote char
-                // Everything after is options
-                splitResult.slice(1).map((tagSection) => {
-                    if (!tagSection.includes('"')) {
-                        name += " " + tagSection;
-                    } else {
-                        options.push(tagSection.slice(1, -1));
-                    }
-                });
+                if (field[1] == "#") {
+                    // Start tag '#'
+                    parentLevelCounter++;
+                    parents.push(parentLevelCounter + "." + name);
+                } else {
+                    // End tag '/'
+                    const fieldNameIdx = parents.findIndex((element) =>
+                        element.includes(parentLevelCounter + ".")
+                    );
+                    // Get all options
+                    options = parents.splice(fieldNameIdx + 1);
+                    // Remove finished field name from parents queue
+                    parents.pop();
+                    parentLevelCounter--;
+                    commitField = true;
+                }
+                break;
+
+            case "option":
+                // Options for fields do not need to be added as fields, only to parents queue
+                if (field[1] == "#") parents.push(name);
+                commitField = false;
                 break;
 
             case "INVALID":
-                name = "INVALID";
                 options = "INVALID";
+                commitField = true;
                 break;
 
             // For TEXT, DATE and NUM
             default:
-                name = splitResult.slice(1).join(" ");
                 options = "";
+                commitField = true;
         }
+        if (commitField) {
+            // Set dependencies
+            if (parentLevelCounter > 0) {
+                const parentFieldNameIdx = parents.findIndex((element) =>
+                    element.includes(parentLevelCounter + ".")
+                );
+                const parentFieldName = parents[parentFieldNameIdx].replace(
+                    parentLevelCounter + ".",
+                    ""
+                );
+                dependencies = parentFieldName + ":" + parents.at(-1);
+            } else {
+                dependencies = "";
+            }
 
-        fields.push({
-            fieldName: name.trim(),
-            fieldType: type,
-            fieldOptions: options,
-        });
+            fields.push({
+                fieldName: name.trim(),
+                fieldType: type,
+                fieldOptions: options,
+                fieldDependencies: dependencies,
+            });
+            commitField = false;
+        }
     });
 
     return fields;
@@ -97,16 +145,31 @@ const prepareFieldsForFill = (fieldValues) => {
 
     // Populate field values to the corresponding tag
     fieldValues.map((field) => {
-        // Rebuild full tag name from field type, name and options
+        // Rebuild full tag name from field type and name
         let tagName = `${field.fieldType}_${field.fieldName.replaceAll(
             " ",
             "_"
         )}`;
-        if (field.fieldType == "dropdown") {
-            // Add dropdown options to tag name
-            tagName = tagName.concat('_"', field.fieldOptions.join('"_"'), '"');
+
+        // Handle dropdown and multi options in a special case
+        if (["dropdown", "multi"].includes(field.fieldType)) {
+            // Set main dropdown or multi tag to true
+            preparedFields[tagName] = true;
+
+            // Set all of the selected options to true
+            if (Array.isArray(field.fieldValue)) {
+                // This is for multi
+                field.fieldValue.map((option) => {
+                    preparedFields["option_" + option] = true;
+                });
+            } else {
+                // This is for dropdown (single fieldValue)
+                preparedFields["option_" + field.fieldValue] = true;
+            }
+        } else {
+            // For regular fields [text, date, num]
+            preparedFields[tagName] = field.fieldValue;
         }
-        preparedFields[tagName] = field.fieldValue;
     });
 
     return preparedFields;
