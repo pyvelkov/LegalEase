@@ -15,7 +15,11 @@ root.render(
         <Auth0Provider
             domain={domain}
             clientId={clientID}
-            authorizationParams={{ redirect_uri: window.location.origin }}
+            authorizationParams={{
+                redirect_uri: window.location.origin,
+                audience: `localhost:5000`,
+                // scope: "read:current_user update:current_user_metadata",
+            }}
         >
             <ChakraProvider theme={theme}>
                 <ColorModeScript

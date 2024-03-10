@@ -11,12 +11,12 @@ const makeRequest = async (
     url,
     method = "GET",
     body = null,
-    customHeaders = {}
-    // contentType = "application/json"
+    customHeaders = {},
+    token = ""
 ) => {
     try {
         const headers = {
-            // "Content-Type": contentType,
+            Authorization: `Bearer ${token}`,
             ...customHeaders,
         };
 
