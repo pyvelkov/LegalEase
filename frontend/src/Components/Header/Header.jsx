@@ -20,12 +20,28 @@ import ToggleColorMode from "./ToggleColorMode";
 import LoginButton from "../Login/LoginButton";
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "../Login/LogoutButton";
+import { useEffect, useState } from "react";
 
 const Header = () => {
     const bg = useColorModeValue("white", "gray.800");
     const mobileNav = useDisclosure();
-    const { user, isAuthenticated, isLoading } = useAuth0();
-    console.log(user);
+    const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
+        useAuth0();
+    const [token, setToken] = useState("");
+
+    useEffect(() => {
+        const getTokenJWT = async () => {
+            try {
+                const accessToken = await getAccessTokenSilently();
+                setToken(accessToken);
+            } catch (e) {
+                console.log(e.message);
+            }
+        };
+        getTokenJWT();
+    }, [getAccessTokenSilently, token]);
+
+    console.log(token);
 
     return (
         <>
