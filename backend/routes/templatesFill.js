@@ -3,7 +3,7 @@ import multer from "multer";
 import pg from "pg";
 import * as storage from "@google-cloud/storage";
 import * as stream from "stream";
-import { fillTemplate } from "../util/docUtils.js";
+import { fillTemplate } from "../util/docUtil.js";
 import getRawBody from "raw-body";
 
 //  mergeParams allows us to get the URL params from the template (previous) router
@@ -16,13 +16,15 @@ router.get("/", async (req, res) => {
 
 // Fill the specified template with values
 router.post("/", upload.none(), async (req, res) => {
-    // Configure SQL query to select all required template metadata
+    const userId = req.auth.payload.sub;
 
+    // Configure SQL query to select all required template metadata
     const templateSqlQuery = {
-        text: "select TMP_UUID, TMP_NAME, TMP_PATH \
-                from public.TEMPLATES \
-                where TMP_UUID = CAST ($1 as UUID)",
-        values: [req.params.templateId],
+        text: "select tmp_uuid, tmp_name, tmp_path \
+                from public.templates \
+                where tmp_uuid = cast ($1 as uuid) \
+                and tmp_user_id = $2",
+        values: [req.params.templateId, userId],
     };
 
     // Establish new database connection

@@ -3,7 +3,7 @@ import multer from "multer";
 import pg from "pg";
 import * as storage from "@google-cloud/storage";
 import { Readable } from "stream";
-import { getTemplateFields } from "../util/docUtils.js";
+import { getTemplateFields } from "../util/docUtil.js";
 
 const router = Router();
 const fileUpload = multer();
@@ -12,16 +12,20 @@ const fileUpload = multer();
  * Get ALL templates metadata (fields, date, etc.)
  * ================= */
 router.get("/", async (req, res) => {
+    const userId = req.auth.payload.sub;
+
     // Establish new database connection
     const dbClient = new pg.Client();
     await dbClient.connect();
 
     // Configure SQL query to select template metadata for all available templates
     const templateSqlQuery = {
-        text: "select TMP_UUID, TMP_NAME, TMP_DATE_CREATED, TMPF_FIELDS \
-                from public.TEMPLATES join public.TEMPLATE_FIELDS \
-                on TMP_UUID = TMPF_TMP_UUID",
-        values: [],
+        text: "select tmp_uuid, tmp_name, tmp_date_created, tmpf_fields \
+                from public.templates \
+                join public.template_fields \
+                on tmp_uuid = tmpf_tmp_uuid \
+                where tmp_user_id = $1",
+        values: [userId],
     };
 
     // Execute queries in database and wait for success/fail response
@@ -48,17 +52,20 @@ router.get("/", async (req, res) => {
  * Get specific template metadata (fields, date, etc.)
  * ================= */
 router.get("/:templateId", async (req, res) => {
+    const userId = req.auth.payload.sub;
+
     // Establish new database connection
     const dbClient = new pg.Client();
     await dbClient.connect();
 
     // Configure SQL query to select all required template metadata
     const templateSqlQuery = {
-        text: "select TMP_UUID, TMP_NAME, TMP_DATE_CREATED, TMPF_FIELDS \
-                from public.TEMPLATES join public.TEMPLATE_FIELDS \
-                on TMP_UUID = TMPF_TMP_UUID \
-                where TMP_UUID = CAST ($1 as UUID)",
-        values: [req.params.templateId],
+        text: "select tmp_uuid, tmp_name, tmp_date_created, tmpf_fields \
+                from public.templates join public.template_fields \
+                on tmp_uuid = tmpf_tmp_uuid \
+                where tmp_uuid = cast ($1 as uuid) \
+                and tmp_user_id = $2",
+        values: [req.params.templateId, userId],
     };
 
     // Execute queries in database and wait for success/fail response
@@ -88,6 +95,8 @@ router.post(
     "/:templateId",
     fileUpload.single("templateFile"),
     async (req, res) => {
+        const userId = req.auth.payload.sub;
+
         const templatePath = `templates/${req.params.templateId}/${req.file.originalname}`;
         const templateFile = req.file.buffer;
 
@@ -110,12 +119,14 @@ router.post(
             templateDateCreated = Date.now(); // Divide by 100 later to convert ms to s
 
         const templateSqlQuery = {
-            text: "insert into public.TEMPLATES values ($1, $2, $3, to_timestamp($4/1000.0))",
+            text: "insert into public.templates \
+                   values ($1, $2, $3, to_timestamp($4/1000.0), $5)",
             values: [
                 templateUuid,
                 templateName,
                 templatePath,
                 templateDateCreated,
+                userId,
             ],
         };
 
@@ -124,7 +135,8 @@ router.post(
 
         // Construct TEMPLATE_FIELDS SQL query to insert new template fields record.
         const templateFieldSqlQuery = {
-            text: "insert into public.TEMPLATE_FIELDS values ($1, $2)",
+            text: "insert into public.template_fields \
+                   values ($1, $2)",
             values: [templateUuid, JSON.stringify(templateFields)],
         };
 
@@ -152,7 +164,9 @@ router.post(
     }
 );
 
+// Delete the specified template record
 router.delete("/:templateId", async (req, res) => {
+    const userId = req.auth.payload.sub;
     const templatePath = `templates/${req.params.templateId}/`;
 
     // Create new storage client for GCS and delete file in bucket
@@ -170,8 +184,10 @@ router.delete("/:templateId", async (req, res) => {
     // Construct TEMPLATE SQL query to insert new template record
     const templateUuid = req.params.templateId;
     const templateDeleteSqlQuery = {
-        text: "delete from public.TEMPLATES where tmp_uuid = $1",
-        values: [templateUuid],
+        text: "delete from public.TEMPLATES \
+               where tmp_uuid = $1 \
+               and tmp_user_id = $2",
+        values: [templateUuid, userId],
     };
 
     // Establish new database connection
