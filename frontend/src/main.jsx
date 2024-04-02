@@ -5,6 +5,8 @@ import App from "./App";
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import theme from "./theme/theme";
 import { Auth0Provider } from "@auth0/auth0-react";
+import store from "./util/store/store";
+import { Provider } from "react-redux";
 
 const domain = import.meta.env.VITE_APP_AUTH0_DOMAIN;
 const clientID = import.meta.env.VITE_APP_AUTH0_CLIENT_ID;
@@ -25,7 +27,9 @@ root.render(
                 <ColorModeScript
                     initialColorMode={theme.config.initialColorMode}
                 />
-                <App />
+                <Provider store={store}>
+                    <App />
+                </Provider>
             </ChakraProvider>
         </Auth0Provider>
     </React.StrictMode>

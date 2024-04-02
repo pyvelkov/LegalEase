@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { SimpleGrid, Box, Center, Text } from "@chakra-ui/react";
 import DocumentCard from "./DocumentCard";
 import { getUploadedDocuments } from "../../util/API/fetchApi";
+import { useSelector } from "react-redux";
 
 /**
  * Generates a library of uploaded documents
  */
 const DocumentLibrary = () => {
+    const token = useSelector((state) => state.user.token);
     const [documents, setDocuments] = useState([{}]);
 
     /**
@@ -14,7 +16,7 @@ const DocumentLibrary = () => {
      */
     const fetchDocument = async () => {
         try {
-            const response = await getUploadedDocuments();
+            const response = await getUploadedDocuments(token);
             console.log(response.templates);
             setDocuments(response.templates);
         } catch (error) {
