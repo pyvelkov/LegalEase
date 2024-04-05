@@ -20,26 +20,32 @@ import ToggleColorMode from "./ToggleColorMode";
 import LoginButton from "../Login/LoginButton";
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from "../Login/LogoutButton";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { setToken } from "../../redux/userSlice";
 
 const Header = () => {
+    const token = useSelector((state) => state.user.token);
+    const dispatch = useDispatch();
     const bg = useColorModeValue("white", "gray.800");
     const mobileNav = useDisclosure();
     const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
         useAuth0();
-    const [token, setToken] = useState("");
+
+    const updateToken = async () => {
+        try {
+            if (token == "") {
+                const accessToken = await getAccessTokenSilently();
+                dispatch(setToken(accessToken));
+            }
+        } catch (e) {
+            console.log(e.message);
+        }
+    };
 
     useEffect(() => {
-        const getTokenJWT = async () => {
-            try {
-                const accessToken = await getAccessTokenSilently();
-                setToken(accessToken);
-            } catch (e) {
-                console.log(e.message);
-            }
-        };
-        getTokenJWT();
-    }, [getAccessTokenSilently, token]);
+        updateToken();
+    }, [token]);
 
     console.log(token);
 
@@ -106,7 +112,7 @@ const Header = () => {
                                 />
                             </SkeletonCircle>
                         ) : (
-                            <Avatar size="sm" ml={5} src="hhtps:brokenlink" />
+                            <Avatar size="sm" ml={5} src="https:brokenlink" />
                         )}
                         <div style={{ marginLeft: isAuthenticated ? 20 : 0 }}>
                             <ToggleColorMode />

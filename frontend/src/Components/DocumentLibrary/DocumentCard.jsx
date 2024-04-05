@@ -23,6 +23,7 @@ import {
 import { Link } from "react-router-dom";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { deleteTemplate } from "../../util/API/fetchApi";
+import { useSelector } from "react-redux";
 
 /**
  * Generates a document card with the proper image, name, upload date and buttons (with UUID)
@@ -32,6 +33,7 @@ import { deleteTemplate } from "../../util/API/fetchApi";
  * @param {UUID} uuid {the uuid of the uploaded document, used for info retrieval}
  */
 const DocumentCard = ({ docName, uploadDate, uuid, onDeleteDocument }) => {
+    const token = useSelector((state) => state.user.token);
     const { isOpen, onOpen, onClose } = useDisclosure();
     const deleteModal = () => {
         return (
@@ -57,7 +59,7 @@ const DocumentCard = ({ docName, uploadDate, uuid, onDeleteDocument }) => {
                             <Button
                                 colorScheme="red"
                                 onClick={() => {
-                                    deleteTemplate(uuid);
+                                    deleteTemplate(uuid, token);
                                     onDeleteDocument(uuid);
                                 }}
                             >

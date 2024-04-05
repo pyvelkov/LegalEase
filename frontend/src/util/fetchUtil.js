@@ -8,11 +8,11 @@
  * @return {Response} {The response from the backend}
  */
 const makeRequest = async (
+    token = "",
     url,
     method = "GET",
     body = null,
-    customHeaders = {},
-    token = ""
+    customHeaders = {}
 ) => {
     try {
         const headers = {

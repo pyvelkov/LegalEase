@@ -10,14 +10,17 @@ import RootLayout from "./layouts/RootLayout";
 import DocFillTemplate from "./Components/FillTemplate/DocFillTemplate";
 import FillTemplateLayout from "./layouts/FillTemplateLayout";
 import FillTemplate from "./pages/FillTemplate/FillTemplate";
+import ProtectedRoute from "./Components/Auth/ProtectedRoute";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<RootLayout />}>
             <Route index element={<AppEntry />} />
-            <Route path="fillTemplate/" element={<FillTemplateLayout />}>
-                <Route index element={<FillTemplate />} />
-                <Route path=":UUID" element={<DocFillTemplate />} />
+            <Route element={<ProtectedRoute />}>
+                <Route path="fillTemplate/" element={<FillTemplateLayout />}>
+                    <Route index element={<FillTemplate />} />
+                    <Route path=":UUID" element={<DocFillTemplate />} />
+                </Route>
             </Route>
         </Route>
     )

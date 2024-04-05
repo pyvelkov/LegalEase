@@ -4,7 +4,7 @@ import {
     fillDownloadTemplate,
     getSpecificTemplate,
 } from "../../util/API/fetchApi";
-
+import { useSelector } from "react-redux";
 import {
     Box,
     Button,
@@ -22,6 +22,7 @@ import NumField from "./FieldTypes/NumField";
 import DropDownField from "./FieldTypes/DropDownField";
 
 const DocFillTemplate = () => {
+    const token = useSelector((state) => state.user.token);
     const { UUID } = useParams();
     const [doc, setDocument] = useState(null);
     const [formData, setFormData] = useState({});
@@ -34,7 +35,7 @@ const DocFillTemplate = () => {
     useEffect(() => {
         const fetchDocument = async () => {
             try {
-                const response = await getSpecificTemplate(UUID);
+                const response = await getSpecificTemplate(UUID, token);
                 setDocument(response);
             } catch (error) {
                 console.error("Error fetching document:", error);
@@ -155,7 +156,8 @@ const DocFillTemplate = () => {
                 try {
                     const response = await fillDownloadTemplate(
                         UUID,
-                        dataToSend
+                        dataToSend,
+                        token
                     );
                     const blob = new Blob([await response.blob()]);
 
