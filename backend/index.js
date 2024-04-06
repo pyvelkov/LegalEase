@@ -3,7 +3,9 @@ import bodyParser from "body-parser";
 import wordRoutes from "./routes/wordRoutes.js";
 import templatesRoutes from "./routes/templates.js";
 import templatesFillRoutes from "./routes/templatesFill.js";
+import helmet from "helmet";
 import * as auth from "./auth.js";
+import { rateLimiter } from "./rateLimiter.js";
 import dotenv from "dotenv";
 import cors from "cors";
 dotenv.config();
@@ -15,6 +17,12 @@ const originEnvVar =
 
 // MAIN APP ROUTER
 const app = express();
+
+// Use helmet
+app.use(helmet());
+
+// Turn on rate limiting for all routes
+app.use(rateLimiter());
 
 // Enable CORS
 app.use(
