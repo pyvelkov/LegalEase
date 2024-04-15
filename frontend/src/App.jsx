@@ -10,6 +10,7 @@ import RootLayout from "./layouts/RootLayout";
 import DocFillTemplate from "./Components/FillTemplate/DocFillTemplate";
 import FillTemplateLayout from "./layouts/FillTemplateLayout";
 import FillTemplate from "./pages/FillTemplate/FillTemplate";
+import DocFillPage from "./Components/FillTemplate/DocFillPage";
 import ProtectedRoute from "./Components/Auth/ProtectedRoute";
 
 const router = createBrowserRouter(
@@ -22,6 +23,7 @@ const router = createBrowserRouter(
                     <Route path=":UUID" element={<DocFillTemplate />} />
                 </Route>
             </Route>
+            <Route path="test/" element={<DocFillPage />} />
         </Route>
     )
 );
