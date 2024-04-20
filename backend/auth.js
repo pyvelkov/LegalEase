@@ -2,6 +2,7 @@ import { auth } from "express-oauth2-jwt-bearer";
 
 // Checks if bearer token is valid
 // Valid = 200, Invalid = 401
+// Will display the stack trace in DEV mode but not in PRODUCTION
 const isAuthorized = (req, res, next) => {
     // Will need to move these options to ENV file later
     return auth({
