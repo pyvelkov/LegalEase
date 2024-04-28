@@ -26,7 +26,7 @@ const processTemplateFields = (uniqueFields) => {
         "dropdown",
         "multi",
         "option",
-        "table",
+        "if",
     ];
     let fields = [];
     let commitField = false;
@@ -55,8 +55,48 @@ const processTemplateFields = (uniqueFields) => {
         // Name for all tags is everything after the tag type except invalid
         name = type != "INVALID" ? splitResult.slice(1).join(" ") : "INVALID";
 
+        // Determine if current tag is opening tag, closing tag or just regular field
+        // based on first character of tag
+        if (field[1] == "#") {
+            // opening tag
+            let parentQueueName;
+            if (type == "dropdown" || type == "if") {
+                parentLevelCounter++;
+                parentQueueName = parentLevelCounter + "." + name;
+            } else {
+                // for dropdown or multi options
+                parentQueueName = name;
+            }
+            parents.push(parentQueueName);
+        } else if (field[1] == "/") {
+            // closing tag
+            if (type == "dropdown") {
+                const fieldNameIdx = parents.findIndex((element) =>
+                    element.includes(parentLevelCounter + ".")
+                );
+                // Get all options
+                options = parents.splice(fieldNameIdx + 1);
+                // Remove finished field name from parents queue
+                parents.pop();
+                parentLevelCounter--;
+                commitField = true;
+            } else if (type == "if") {
+                parents.pop();
+                parentLevelCounter--;
+                commitField = false;
+            } else {
+                // for options tags
+                commitField = false;
+            }
+        } else {
+            // regular field (text, date, num)
+            options = type == "INVALID" ? "INVALID" : "";
+            commitField = true;
+        }
+
+        // OLDER LOGIC, leaving as comment for future reference
         // Based on the type of field, find the field name and options (if applicable)
-        switch (type) {
+        /*switch (type) {
             // Dropdown and multi types are special cases since they contain list of options
             case "multi":
             // fall through
@@ -94,7 +134,7 @@ const processTemplateFields = (uniqueFields) => {
             default:
                 options = "";
                 commitField = true;
-        }
+        }*/
         if (commitField) {
             // Set dependencies
             if (parentLevelCounter > 0) {
@@ -105,7 +145,12 @@ const processTemplateFields = (uniqueFields) => {
                     parentLevelCounter + ".",
                     ""
                 );
-                dependencies = parentFieldName + ":" + parents.at(-1);
+                // Handles case for IF dependencies
+                if (parents[parentFieldNameIdx] != parents.at(-1)) {
+                    dependencies = parentFieldName + ":" + parents.at(-1);
+                } else {
+                    dependencies = parentFieldName;
+                }
             } else {
                 dependencies = "";
             }
