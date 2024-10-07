@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
     // Configure SQL query to select template metadata for all available templates
     const templateSqlQuery = {
         text: "select tmp_uuid, tmp_name, tmp_date_created, tmpf_fields \
-                from public.templates \
+                from public.templates_view \
                 join public.template_fields \
                 on tmp_uuid = tmpf_tmp_uuid \
                 where tmp_user_id = $1",
@@ -61,7 +61,8 @@ router.get("/:templateId", async (req, res) => {
     // Configure SQL query to select all required template metadata
     const templateSqlQuery = {
         text: "select tmp_uuid, tmp_name, tmp_date_created, tmpf_fields \
-                from public.templates join public.template_fields \
+                from public.templates_view \
+                join public.template_fields \
                 on tmp_uuid = tmpf_tmp_uuid \
                 where tmp_uuid = cast ($1 as uuid) \
                 and tmp_user_id = $2",
@@ -119,7 +120,7 @@ router.post(
             templateDateCreated = Date.now(); // Divide by 100 later to convert ms to s
 
         const templateSqlQuery = {
-            text: "insert into public.templates \
+            text: "insert into public.templates_view \
                    values ($1, $2, $3, to_timestamp($4/1000.0), $5)",
             values: [
                 templateUuid,
@@ -184,7 +185,7 @@ router.delete("/:templateId", async (req, res) => {
     // Construct TEMPLATE SQL query to insert new template record
     const templateUuid = req.params.templateId;
     const templateDeleteSqlQuery = {
-        text: "delete from public.TEMPLATES \
+        text: "delete from public.templates_view \
                where tmp_uuid = $1 \
                and tmp_user_id = $2",
         values: [templateUuid, userId],
