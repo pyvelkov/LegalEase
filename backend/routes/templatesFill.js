@@ -21,7 +21,7 @@ router.post("/", upload.none(), async (req, res) => {
     // Configure SQL query to select all required template metadata
     const templateSqlQuery = {
         text: "select tmp_uuid, tmp_name, tmp_path \
-                from public.templates \
+                from public.templates_view \
                 where tmp_uuid = cast ($1 as uuid) \
                 and tmp_user_id = $2",
         values: [req.params.templateId, userId],
