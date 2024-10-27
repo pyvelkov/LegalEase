@@ -49,7 +49,7 @@ router.get("/", async (req, res) => {
 });
 
 /* =================
- * Get specific template metadata (fields, date, etc.)
+ * Get specified template file
  * ================= */
 router.get("/:templateId", async (req, res) => {
     const userId = req.auth.payload.sub;
@@ -83,10 +83,36 @@ router.get("/:templateId", async (req, res) => {
         await dbClient.end();
     }
 
-    // Return 404 if no records found, otherwise should only be 1 record
-    dbRes.rowCount > 0
-        ? res.status(200).json(dbRes.rows[0])
-        : res.status(404).send();
+    // Return 404 if no template record found
+    if (dbRes.rowCount < 1) {
+        res.status(404).send();
+        return;
+    }
+
+    // Get template path value
+    const templatePath = dbRes.rows[0].tmp_path;
+
+    // Create new storage client for GCS and download template file from path
+    let templateFile, templateFileBuffer;
+    try {
+        const storageClient = new storage.Storage();
+        templateFile = await storageClient
+            .bucket("legalease")
+            .file(templatePath);
+        templateFileBuffer = await getRawBody(templateFile.createReadStream());
+    } catch (error) {
+        console.error(error);
+        res.status(500).send("Error downloading template file from GCS.");
+        return;
+    }
+
+    // Send back file response
+    const responseStream = new stream.PassThrough();
+    responseStream.end(templateFileBuffer);
+    res.set("Content-Type", "text/plain");
+    res.set("Content-disposition", "attachment; filename=" + req.body.fileName);
+    res.set("Access-Control-Expose-Headers", "Content-disposition");
+    responseStream.pipe(res);
 });
 
 /* =================
