@@ -1,7 +1,7 @@
 import { Router } from "express";
 import pg from "pg";
 
-const router = Router();
+const router = Router({ mergeParams: true });
 
 /* =================
  * Get specific template metadata (fields, date, etc.)
@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
     // Configure SQL query to select all required template metadata
     const templateSqlQuery = {
         text: "select tmp_uuid, tmp_name, tmp_date_created, tmpf_fields \
-                from public.templates join public.template_fields \
+                from public.templates_view join public.template_fields \
                 on tmp_uuid = tmpf_tmp_uuid \
                 where tmp_uuid = cast ($1 as uuid) \
                 and tmp_user_id = $2",
@@ -40,7 +40,7 @@ router.get("/", async (req, res) => {
     // Return 404 if no records found, otherwise should only be 1 record
     dbRes.rowCount > 0
         ? res.status(200).json(dbRes.rows[0])
-        : res.status(404).send();
+        : res.status(405).send();
 });
 
 export default router;

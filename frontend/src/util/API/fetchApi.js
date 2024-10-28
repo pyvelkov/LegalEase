@@ -30,7 +30,7 @@ export const getUploadedDocuments = async (token) => {
  * @return {Response} returns the appropriate response from backend
  */
 export const getSpecificTemplate = async (UUID, token) => {
-    return await makeRequest(token, `templates/${UUID}`);
+    return await makeRequest(token, `templates/${UUID}/info`);
 };
 
 /**

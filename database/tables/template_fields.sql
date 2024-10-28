@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS public.template_fields
     tmpf_fields json NOT NULL,
     CONSTRAINT template_fields_pkey PRIMARY KEY (tmpf_tmp_uuid),
     CONSTRAINT templates_fk FOREIGN KEY (tmpf_tmp_uuid)
-        REFERENCES public.templates (tmp_uuid) MATCH SIMPLE
+        REFERENCES public.user_templates (tmp_uuid) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE CASCADE
 )

@@ -47,7 +47,7 @@ const RichTextEditor = () => {
                     })
                     .then(function (result) {
                         var html = result.value; // The generated HTML
-                        console.log(html);
+                        // console.log(html);
                         setDocumentHTML(html);
                         editor.commands.setContent(html);
                         var messages = result.messages; // Any messages, such as warnings during conversion
@@ -89,7 +89,7 @@ const RichTextEditor = () => {
     }, [editor]);
 
     useEffect(() => {
-        console.log(documentHTML);
+        // console.log(documentHTML);
     }, [documentHTML]);
 
     return (
