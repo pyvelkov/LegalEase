@@ -149,6 +149,7 @@ const DocFillTemplate = () => {
                     });
                 });
 
+                console.log(prepareData);
                 const dataToSend = new FormData();
                 dataToSend.append("fileName", `${documentName}.docx`);
                 dataToSend.append("fields", JSON.stringify(prepareData));
@@ -202,7 +203,14 @@ const DocFillTemplate = () => {
                                             or document is invalid...
                                         </Text>
                                     ) : (
-                                        <SimpleGrid columns={6} spacing={6}>
+                                        <SimpleGrid
+                                            columns={6}
+                                            // spacing={6}
+                                            spacingX={6}
+                                            maxHeight={"70vh"}
+                                            overflow={"auto"}
+                                            minHeight={"63vh"}
+                                        >
                                             {renderFields()}
                                         </SimpleGrid>
                                     )}

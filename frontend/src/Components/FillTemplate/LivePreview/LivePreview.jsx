@@ -1,35 +1,40 @@
-import { Flex, IconButton } from "@chakra-ui/react";
-import { FiMenu } from "react-icons/fi";
-import { useState } from "react";
-
+import { Box, SimpleGrid, GridItem, Stack } from "@chakra-ui/react";
+import RichTextEditor from "../../RichTextEditor/RichTextEditor";
 const LivePreview = () => {
-    const [navSize, setNavSize] = useState("large");
     return (
         <>
-            <Flex
-                pos="sticky"
-                left="5"
-                h="70vh"
-                marginTop="2.5vh"
-                boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.05)"
-                w={navSize == "small" ? "75px" : "500px"}
-                flexDir="column"
-                justifyContent="space-between"
-            >
-                <Flex as="nav" p="5%" flexDir="column" alignItems="flex-start">
-                    <IconButton
-                        background="none"
-                        mt={5}
-                        _hover={{ background: "none" }}
-                        icon={<FiMenu />}
-                        onClick={() => {
-                            if (navSize == "small") setNavSize("large");
-                            else setNavSize("small");
-                        }}
-                    />
-                </Flex>
-                <Flex>{/* this is where the RTE will go */}</Flex>
-            </Flex>
+            <Box bg="#edf3f8" _dark={{ bg: "#111" }} p={5}>
+                <Box>
+                    <SimpleGrid
+                        display={{ base: "initial", md: "grid" }}
+                        columns={{ md: 1 }}
+                    >
+                        <GridItem mt={[5, null, 0]} colSpan={{ md: 2 }}>
+                            <Box shadow="base" rounded={[null, "md"]}>
+                                <Stack
+                                    px={4}
+                                    py={5}
+                                    p={[null, 6]}
+                                    bg="white"
+                                    _dark={{ bg: "gray.700" }}
+                                    spacing={6}
+                                >
+                                    <SimpleGrid
+                                        columns={1}
+                                        spacing={1}
+                                        maxHeight={"70vh"}
+                                        overflow={"auto"}
+                                        minHeight={"70vh"}
+                                    >
+                                        {/* RTE goes here */}
+                                        <RichTextEditor />
+                                    </SimpleGrid>
+                                </Stack>
+                            </Box>
+                        </GridItem>
+                    </SimpleGrid>
+                </Box>
+            </Box>
         </>
     );
 };
