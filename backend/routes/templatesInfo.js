@@ -1,7 +1,8 @@
 import { Router } from "express";
 import pg from "pg";
 
-const router = Router();
+//  mergeParams allows us to get the URL params from the template (previous) router
+const router = Router({ mergeParams: true });
 
 /* =================
  * Get specific template metadata (fields, date, etc.)
@@ -16,7 +17,7 @@ router.get("/", async (req, res) => {
     // Configure SQL query to select all required template metadata
     const templateSqlQuery = {
         text: "select tmp_uuid, tmp_name, tmp_date_created, tmpf_fields \
-                from public.templates join public.template_fields \
+                from public.templates_view join public.template_fields \
                 on tmp_uuid = tmpf_tmp_uuid \
                 where tmp_uuid = cast ($1 as uuid) \
                 and tmp_user_id = $2",
