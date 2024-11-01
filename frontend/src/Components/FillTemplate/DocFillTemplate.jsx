@@ -71,6 +71,129 @@ const DocFillTemplate = () => {
         setReviewFields(false);
     };
 
+    // function removeHighlightText() {
+    //     const livePreviewElement =
+    //         document.getElementById("livePreviewElement");
+    //     if (!livePreviewElement) return;
+
+    //     const spans = livePreviewElement.querySelectorAll("span");
+    //     spans.forEach((span) => {
+    //         span.replaceWith(span.textContent);
+    //     });
+    // }
+
+    // function highlightAllMatchingText(textToMatch = "{text_corporationName}") {
+    //     // Get the element with id `livePreviewElement`
+    //     const livePreviewElement =
+    //         document.getElementById("livePreviewElement");
+    //     if (!livePreviewElement) return; // Exit if the element is not found
+
+    //     // Recursive function to check and wrap text in each child element
+    //     function wrapMatchingText(node) {
+    //         // Only process text nodes
+    //         if (node.nodeType === Node.TEXT_NODE) {
+    //             const text = node.nodeValue;
+    //             const regex = new RegExp(textToMatch, "gi"); // Global case-insensitive match
+
+    //             // If there's a match, wrap the matching text in a span
+    //             if (regex.test(text)) {
+    //                 const fragment = document.createDocumentFragment();
+    //                 let lastIndex = 0;
+    //                 text.replace(regex, (match, index) => {
+    //                     // Append text before the match
+    //                     fragment.appendChild(
+    //                         document.createTextNode(
+    //                             text.slice(lastIndex, index)
+    //                         )
+    //                     );
+
+    //                     // Create the span element to wrap the matching text
+    //                     const span = document.createElement("span");
+    //                     span.style.backgroundColor = "yellow"; // Example style, adjust as needed
+    //                     span.textContent = match;
+
+    //                     // Append the span
+    //                     fragment.appendChild(span);
+
+    //                     // Update lastIndex
+    //                     lastIndex = index + match.length;
+    //                 });
+
+    //                 // Append any remaining text after the last match
+    //                 fragment.appendChild(
+    //                     document.createTextNode(text.slice(lastIndex))
+    //                 );
+
+    //                 // Replace the original text node with the fragment
+    //                 node.parentNode.replaceChild(fragment, node);
+    //             }
+    //         } else {
+    //             // Process child nodes recursively
+    //             node.childNodes.forEach(wrapMatchingText);
+    //         }
+    //     }
+
+    //     // Start the recursion from the main element
+    //     livePreviewElement.childNodes.forEach(wrapMatchingText);
+    // }
+    function highlightMatchingText(textToMatch) {
+        const livePreviewElement =
+            document.getElementById("livePreviewElement");
+        if (!livePreviewElement) return;
+
+        // Clear existing highlights
+        // removeHighlightText();
+
+        // Recursive function to highlight matching text
+        function highlightText(node) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                const text = node.nodeValue;
+                const regex = new RegExp(textToMatch, "gi");
+
+                if (regex.test(text)) {
+                    const fragment = document.createDocumentFragment();
+                    let lastIndex = 0;
+
+                    text.replace(regex, (match, index) => {
+                        fragment.appendChild(
+                            document.createTextNode(
+                                text.slice(lastIndex, index)
+                            )
+                        );
+
+                        const span = document.createElement("span");
+                        span.style.backgroundColor = "yellow"; // Highlight color
+                        span.textContent = match;
+
+                        fragment.appendChild(span);
+                        lastIndex = index + match.length;
+                    });
+
+                    fragment.appendChild(
+                        document.createTextNode(text.slice(lastIndex))
+                    );
+                    node.parentNode.replaceChild(fragment, node);
+                }
+            } else {
+                node.childNodes.forEach(highlightText);
+            }
+        }
+
+        livePreviewElement.childNodes.forEach(highlightText);
+    }
+
+    function removeHighlightText() {
+        const livePreviewElement =
+            document.getElementById("livePreviewElement");
+        if (!livePreviewElement) return;
+
+        // Remove all spans and restore the original text content
+        const spans = livePreviewElement.querySelectorAll("span");
+        spans.forEach((span) => {
+            span.replaceWith(span.textContent);
+        });
+    }
+
     const renderFields = () => {
         if (!doc) {
             return null;
@@ -86,6 +209,8 @@ const DocFillTemplate = () => {
                         onChange={handleFieldChange}
                         reviewMode={reviewFields}
                         defaults={formData[field.fieldName]}
+                        highlightAllMatchingText={highlightMatchingText}
+                        removeHighlightText={removeHighlightText}
                     />
                 );
             } else if (field.fieldType === "date") {
@@ -204,9 +329,9 @@ const DocFillTemplate = () => {
                                         </Text>
                                     ) : (
                                         <SimpleGrid
-                                            columns={6}
+                                            columns={4}
                                             // spacing={6}
-                                            spacingX={6}
+                                            spacingX={2}
                                             maxHeight={"70vh"}
                                             overflow={"auto"}
                                             minHeight={"63vh"}

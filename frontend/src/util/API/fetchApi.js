@@ -52,6 +52,17 @@ export const fillDownloadTemplate = async (UUID, payload, token) => {
 };
 
 /**
+ * Request to get a specific template file with the UUID
+ *
+ * @param {String} UUID {template record UUID}
+ * @param {String} token {the authentication user token to be sent}
+ * @return {Response} returns the appropriate file for the template from backend
+ */
+export const getSpecificTemplateFile = async (UUID, token) => {
+    return await makeRequest(token, `templates/${UUID}`);
+};
+
+/**
  * Request to delete a template record with UUID.
  *
  * @param {String} UUID {template record UUID}

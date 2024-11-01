@@ -40,7 +40,7 @@ router.get("/", async (req, res) => {
     // Return 404 if no records found, otherwise should only be 1 record
     dbRes.rowCount > 0
         ? res.status(200).json(dbRes.rows[0])
-        : res.status(405).send();
+        : res.status(404).send();
 });
 
 export default router;

@@ -2,8 +2,10 @@ import { Router } from "express";
 import multer from "multer";
 import pg from "pg";
 import * as storage from "@google-cloud/storage";
-import { Readable } from "stream";
+// import { Readable } from "stream";
 import { getTemplateFields } from "../util/docUtil.js";
+import * as stream from "stream";
+import getRawBody from "raw-body";
 
 const router = Router();
 const fileUpload = multer();
@@ -108,7 +110,7 @@ router.get("/:templateId", async (req, res) => {
     const responseStream = new stream.PassThrough();
     responseStream.end(templateFileBuffer);
     res.set("Content-Type", "text/plain");
-    res.set("Content-disposition", "attachment; filename=" + req.body.fileName);
+    res.set("Content-disposition", "attachment;");
     res.set("Access-Control-Expose-Headers", "Content-disposition");
     responseStream.pipe(res);
 });
@@ -131,7 +133,7 @@ router.post(
             await storageClient
                 .bucket("legalease")
                 .file(templatePath)
-                .save(Readable.from(templateFile));
+                .save(stream.Readable.from(templateFile));
         } catch (error) {
             console.error(error);
             res.status(500).send("Error uploading template file to GCS.");
