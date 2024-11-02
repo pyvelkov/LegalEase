@@ -1,6 +1,7 @@
 import { Router } from "express";
 import pg from "pg";
 
+//  mergeParams allows us to get the URL params from the template (previous) router
 const router = Router({ mergeParams: true });
 
 /* =================

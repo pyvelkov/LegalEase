@@ -2,9 +2,8 @@ import { Router } from "express";
 import multer from "multer";
 import pg from "pg";
 import * as storage from "@google-cloud/storage";
-// import { Readable } from "stream";
-import { getTemplateFields } from "../util/docUtil.js";
 import * as stream from "stream";
+import { getTemplateFields } from "../util/docUtil.js";
 import getRawBody from "raw-body";
 
 const router = Router();

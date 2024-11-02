@@ -156,6 +156,7 @@ const processTemplateFields = (uniqueFields) => {
             }
 
             fields.push({
+                fieldTag: field,
                 fieldName: name.trim(),
                 fieldType: type,
                 fieldOptions: options,
