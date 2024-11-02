@@ -6,6 +6,7 @@ const TextField = ({
     onChange,
     reviewMode,
     defaults,
+    rawTag,
     highlightAllMatchingText,
     removeHighlightText,
 }) => {
@@ -40,7 +41,7 @@ const TextField = ({
                     w="full"
                     rounded="md"
                     onFocus={() => {
-                        highlightAllMatchingText(`{text_${name}}`);
+                        highlightAllMatchingText(`${rawTag}`);
                     }}
                     onBlur={() => {
                         removeHighlightText();

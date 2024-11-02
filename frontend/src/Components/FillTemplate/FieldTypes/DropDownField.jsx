@@ -1,4 +1,5 @@
 import { FormControl, FormLabel, GridItem, Select } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
 
 const DropDownField = ({
     name,
@@ -7,11 +8,30 @@ const DropDownField = ({
     options,
     reviewMode,
     defaults,
+    rawTag,
+    highlightAllMatchingText,
+    removeHighlightText,
 }) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         onChange(name, value);
     };
+
+    const [rawTagFinal, setrawTagFinal] = useState(rawTag);
+
+    useEffect(() => {
+        const replaceChar = (str, index, newChar) => {
+            if (index < 0 || index >= str.length) {
+                return str;
+            }
+
+            return str.slice(0, index) + newChar + str.slice(index + 1);
+        };
+
+        let tempTag = replaceChar(rawTag, 1, "#");
+        setrawTagFinal(tempTag);
+    }, [rawTag]);
+
     return (
         <>
             <FormControl as={GridItem} colSpan={[6, 2]}>
@@ -38,6 +58,12 @@ const DropDownField = ({
                     size="sm"
                     w="full"
                     rounded="md"
+                    onFocus={() => {
+                        highlightAllMatchingText(rawTagFinal);
+                    }}
+                    onBlur={() => {
+                        removeHighlightText();
+                    }}
                 >
                     <option value="" disabled hidden>
                         Select {name}

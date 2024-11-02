@@ -1,6 +1,15 @@
 import { FormControl, FormLabel, GridItem, Input } from "@chakra-ui/react";
 
-const NumField = ({ name, value, onChange, reviewMode, defaults }) => {
+const NumField = ({
+    name,
+    value,
+    onChange,
+    reviewMode,
+    defaults,
+    rawTag,
+    highlightAllMatchingText,
+    removeHighlightText,
+}) => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         onChange(name, value);
@@ -31,6 +40,12 @@ const NumField = ({ name, value, onChange, reviewMode, defaults }) => {
                     size="sm"
                     w="full"
                     rounded="md"
+                    onFocus={() => {
+                        highlightAllMatchingText(`${rawTag}`);
+                    }}
+                    onBlur={() => {
+                        removeHighlightText();
+                    }}
                 />
             </FormControl>
         </>

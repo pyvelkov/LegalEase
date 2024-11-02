@@ -18,14 +18,15 @@ const RichTextEditor = () => {
                 const arrayBuffer = await blob.arrayBuffer();
                 mammothPlus
                     .convertToHtml({
-                        arrayBuffer: arrayBuffer, // in browser
+                        arrayBuffer: arrayBuffer,
                     })
                     .then(function (result) {
                         var html = result.value; // The generated HTML
                         setDocumentHTML(html);
 
-                        var messages = result.messages; // Any messages, such as warnings during conversion
-                        console.log("messages: ", messages);
+                        // console log any messages/warnings on conversion (will leave it for debugging when implementing full RTE later)
+                        // var messages = result.messages;
+                        // console.log("messages: ", messages);
                         document.getElementById(
                             "livePreviewElement"
                         ).innerHTML = html;
