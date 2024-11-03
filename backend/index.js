@@ -30,7 +30,11 @@ app.use(rateLimiter());
 // Enable CORS
 app.use(
     cors({
-        origin: [originEnvVar, "https://legal-ease-gray.vercel.app"],
+        origin: [
+            originEnvVar,
+            "https://legal-ease-gray.vercel.app",
+            "https://legal-ease-orpin.vercel.app",
+        ],
         methods: "*",
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true,
