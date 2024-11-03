@@ -15,7 +15,22 @@ const colors = {
     },
 };
 
+const components = {
+    components: {
+        Drawer: {
+            variants: {
+                permanent: {
+                    dialogContainer: {
+                        width: 0,
+                    },
+                },
+            },
+        },
+    },
+};
+
 const theme = {
+    components,
     colors,
     config: { initialColorMode: "dark", useSystemColorMode: true },
 };

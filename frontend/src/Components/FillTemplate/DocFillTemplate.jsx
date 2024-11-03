@@ -71,6 +71,76 @@ const DocFillTemplate = () => {
         setReviewFields(false);
     };
 
+    /*
+     * recursively call function to highlight the matching text that is passed as prop.
+     */
+    const highlightMatchingText = (textToMatch) => {
+        const livePreviewElement =
+            document.getElementById("livePreviewElement");
+        if (!livePreviewElement) return;
+
+        /*
+         * Recursive function to highlight matching text
+         */
+        const highlightText = (node) => {
+            // check if node is text type (most inner node)
+            if (node.nodeType === Node.TEXT_NODE) {
+                const text = node.nodeValue;
+                const regex = new RegExp(textToMatch, "gi");
+
+                // check if there is a match between the text of node and text passed (templated text)
+                if (regex.test(text)) {
+                    const fragment = document.createDocumentFragment();
+                    let lastIndex = 0;
+
+                    // replace matching text with the highlighted text
+                    text.replace(regex, (match, index) => {
+                        fragment.appendChild(
+                            document.createTextNode(
+                                text.slice(lastIndex, index)
+                            )
+                        );
+
+                        const span = document.createElement("span");
+                        span.style.backgroundColor = "yellow";
+                        span.textContent = match;
+
+                        fragment.appendChild(span);
+                        lastIndex = index + match.length;
+                    });
+
+                    fragment.appendChild(
+                        document.createTextNode(text.slice(lastIndex))
+                    );
+                    node.parentNode.replaceChild(fragment, node);
+                }
+            } else {
+                // if node has children keep going deeper till text node is found
+                node.childNodes.forEach(highlightText);
+            }
+        };
+
+        // highlight each child node for the live preview element (div)
+        livePreviewElement.childNodes.forEach(highlightText);
+    };
+
+    /*
+     * remove all highlighted text (span tags) when the field loses focus (click outside or on new input field)
+     */
+    function removeHighlightText() {
+        const livePreviewElement =
+            document.getElementById("livePreviewElement");
+        if (!livePreviewElement) return;
+
+        // Remove all spans and restore the original text content
+        const spans = livePreviewElement.querySelectorAll(
+            `span[style*="background-color: yellow"]`
+        );
+        spans.forEach((span) => {
+            span.replaceWith(span.textContent);
+        });
+    }
+
     const renderFields = () => {
         if (!doc) {
             return null;
@@ -86,6 +156,9 @@ const DocFillTemplate = () => {
                         onChange={handleFieldChange}
                         reviewMode={reviewFields}
                         defaults={formData[field.fieldName]}
+                        rawTag={field.fieldTag}
+                        highlightAllMatchingText={highlightMatchingText}
+                        removeHighlightText={removeHighlightText}
                     />
                 );
             } else if (field.fieldType === "date") {
@@ -97,6 +170,9 @@ const DocFillTemplate = () => {
                         onChange={handleFieldChange}
                         reviewMode={reviewFields}
                         defaults={formData[field.fieldName]}
+                        rawTag={field.fieldTag}
+                        highlightAllMatchingText={highlightMatchingText}
+                        removeHighlightText={removeHighlightText}
                     />
                 );
             } else if (field.fieldType === "num") {
@@ -108,6 +184,9 @@ const DocFillTemplate = () => {
                         onChange={handleFieldChange}
                         reviewMode={reviewFields}
                         defaults={formData[field.fieldName]}
+                        rawTag={field.fieldTag}
+                        highlightAllMatchingText={highlightMatchingText}
+                        removeHighlightText={removeHighlightText}
                     />
                 );
             } else if (field.fieldType === "dropdown") {
@@ -120,6 +199,9 @@ const DocFillTemplate = () => {
                         onChange={handleFieldChange}
                         reviewMode={reviewFields}
                         defaults={formData[field.fieldName]}
+                        rawTag={field.fieldTag}
+                        highlightAllMatchingText={highlightMatchingText}
+                        removeHighlightText={removeHighlightText}
                     />
                 );
             } else {
@@ -149,6 +231,7 @@ const DocFillTemplate = () => {
                     });
                 });
 
+                console.log(prepareData);
                 const dataToSend = new FormData();
                 dataToSend.append("fileName", `${documentName}.docx`);
                 dataToSend.append("fields", JSON.stringify(prepareData));
@@ -202,7 +285,14 @@ const DocFillTemplate = () => {
                                             or document is invalid...
                                         </Text>
                                     ) : (
-                                        <SimpleGrid columns={6} spacing={6}>
+                                        <SimpleGrid
+                                            columns={4}
+                                            // spacing={6}
+                                            spacingX={2}
+                                            maxHeight={"70vh"}
+                                            overflow={"auto"}
+                                            minHeight={"63vh"}
+                                        >
                                             {renderFields()}
                                         </SimpleGrid>
                                     )}
