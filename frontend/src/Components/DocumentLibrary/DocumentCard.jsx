@@ -22,7 +22,11 @@ import {
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { DeleteIcon } from "@chakra-ui/icons";
-import { deleteTemplate } from "../../util/API/fetchApi";
+import { FaFileDownload } from "react-icons/fa";
+import {
+    deleteTemplate,
+    getSpecificTemplateFile,
+} from "../../util/API/fetchApi";
 import { useSelector } from "react-redux";
 
 /**
@@ -71,6 +75,24 @@ const DocumentCard = ({ docName, uploadDate, uuid, onDeleteDocument }) => {
             </>
         );
     };
+
+    const downloadDocument = async () => {
+        try {
+            const response = await getSpecificTemplateFile(uuid, token);
+            const blob = new Blob([await response.blob()]);
+
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute("download", `${docName}.docx`);
+            document.body.appendChild(link);
+            link.click();
+            link.parentNode.removeChild(link);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     return (
         <>
             {deleteModal()}
@@ -102,11 +124,16 @@ const DocumentCard = ({ docName, uploadDate, uuid, onDeleteDocument }) => {
                                 <IconButton
                                     icon={<DeleteIcon color="red.500" />}
                                     bg="transparent"
-                                    // onClick={() => {
-                                    //     deleteTemplate(uuid);
-                                    //     onDeleteDocument(uuid);
-                                    // }}
                                     onClick={onOpen}
+                                />
+                            </Center>
+                            <Center>
+                                <IconButton
+                                    icon={<FaFileDownload color="red.500" />}
+                                    bg="transparent"
+                                    onClick={() => {
+                                        downloadDocument();
+                                    }}
                                 />
                             </Center>
                         </HStack>
