@@ -3,7 +3,7 @@ import multer from "multer";
 import pg from "pg";
 import * as storage from "@google-cloud/storage";
 import * as stream from "stream";
-import { fillTemplate, getGCPCredentials } from "../util/docUtil.js";
+import { fillTemplate, getGCPCredentials, pgConfig } from "../util/docUtil.js";
 import getRawBody from "raw-body";
 
 //  mergeParams allows us to get the URL params from the template (previous) router
@@ -28,7 +28,7 @@ router.post("/", upload.none(), async (req, res) => {
     };
 
     // Establish new database connection
-    const dbClient = new pg.Client();
+    const dbClient = new pg.Client(pgConfig());
     await dbClient.connect();
 
     // Execute queries in database and wait for success/fail response

@@ -1,5 +1,6 @@
 import { Router } from "express";
 import pg from "pg";
+import { pgConfig } from "../util/docUtil.js";
 
 //  mergeParams allows us to get the URL params from the template (previous) router
 const router = Router({ mergeParams: true });
@@ -11,7 +12,7 @@ router.get("/", async (req, res) => {
     const userId = req.auth.payload.sub;
 
     // Establish new database connection
-    const dbClient = new pg.Client();
+    const dbClient = new pg.Client(pgConfig());
     await dbClient.connect();
 
     // Configure SQL query to select all required template metadata

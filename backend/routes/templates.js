@@ -3,7 +3,11 @@ import multer from "multer";
 import pg from "pg";
 import * as storage from "@google-cloud/storage";
 import * as stream from "stream";
-import { getTemplateFields, getGCPCredentials } from "../util/docUtil.js";
+import {
+    getTemplateFields,
+    getGCPCredentials,
+    pgConfig,
+} from "../util/docUtil.js";
 import getRawBody from "raw-body";
 
 const router = Router();
@@ -16,7 +20,7 @@ router.get("/", async (req, res) => {
     const userId = req.auth.payload.sub;
 
     // Establish new database connection
-    const dbClient = new pg.Client();
+    const dbClient = new pg.Client(pgConfig());
     await dbClient.connect();
 
     // Configure SQL query to select template metadata for all available templates
@@ -56,7 +60,7 @@ router.get("/:templateId", async (req, res) => {
     const userId = req.auth.payload.sub;
 
     // Establish new database connection
-    const dbClient = new pg.Client();
+    const dbClient = new pg.Client(pgConfig());
     await dbClient.connect();
 
     // Configure SQL query to select all required template metadata
@@ -167,7 +171,7 @@ router.post(
         };
 
         // Establish new database connection
-        const dbClient = new pg.Client();
+        const dbClient = new pg.Client(pgConfig());
         await dbClient.connect();
 
         // Execute queries in database and wait for success/fail response
@@ -217,7 +221,7 @@ router.delete("/:templateId", async (req, res) => {
     };
 
     // Establish new database connection
-    const dbClient = new pg.Client();
+    const dbClient = new pg.Client(pgConfig());
     await dbClient.connect();
 
     // Execute queries in database and wait for success/fail response

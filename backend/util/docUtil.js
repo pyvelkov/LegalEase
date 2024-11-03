@@ -251,4 +251,10 @@ const getGCPCredentials = () => {
           {};
 };
 
-export { fillTemplate, getTemplateFields, getGCPCredentials };
+const pgConfig = () => {
+    return {
+        connectionString: process.env.PGURL,
+    };
+};
+
+export { fillTemplate, getTemplateFields, getGCPCredentials, pgConfig };
