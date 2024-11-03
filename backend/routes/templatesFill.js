@@ -3,7 +3,7 @@ import multer from "multer";
 import pg from "pg";
 import * as storage from "@google-cloud/storage";
 import * as stream from "stream";
-import { fillTemplate } from "../util/docUtil.js";
+import { fillTemplate, getGCPCredentials } from "../util/docUtil.js";
 import getRawBody from "raw-body";
 
 //  mergeParams allows us to get the URL params from the template (previous) router
@@ -56,7 +56,7 @@ router.post("/", upload.none(), async (req, res) => {
     // Create new storage client for GCS and download template file from path
     let templateFile, templateFileBuffer;
     try {
-        const storageClient = new storage.Storage();
+        const storageClient = new storage.Storage(getGCPCredentials());
         templateFile = await storageClient
             .bucket("legalease")
             .file(templatePath);

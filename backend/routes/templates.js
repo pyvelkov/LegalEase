@@ -3,7 +3,7 @@ import multer from "multer";
 import pg from "pg";
 import * as storage from "@google-cloud/storage";
 import * as stream from "stream";
-import { getTemplateFields } from "../util/docUtil.js";
+import { getTemplateFields, getGCPCredentials } from "../util/docUtil.js";
 import getRawBody from "raw-body";
 
 const router = Router();
@@ -94,7 +94,7 @@ router.get("/:templateId", async (req, res) => {
     // Create new storage client for GCS and download template file from path
     let templateFile, templateFileBuffer;
     try {
-        const storageClient = new storage.Storage();
+        const storageClient = new storage.Storage(getGCPCredentials());
         templateFile = await storageClient
             .bucket("legalease")
             .file(templatePath);
@@ -128,7 +128,7 @@ router.post(
 
         // Create new storage client for GCS and upload file to path in bucket
         try {
-            const storageClient = new storage.Storage();
+            const storageClient = new storage.Storage(getGCPCredentials());
             await storageClient
                 .bucket("legalease")
                 .file(templatePath)
@@ -197,7 +197,7 @@ router.delete("/:templateId", async (req, res) => {
 
     // Create new storage client for GCS and delete file in bucket
     try {
-        const storageClient = new storage.Storage();
+        const storageClient = new storage.Storage(getGCPCredentials());
         await storageClient.bucket("legalease").deleteFiles({
             prefix: templatePath,
         });
