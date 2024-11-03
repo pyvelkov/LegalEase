@@ -141,69 +141,169 @@ const DocFillTemplate = () => {
         });
     }
 
+    /*
+     * checks if formData has the keyName from field.fieldDependencies, if it does spits back the dependency value (if available)
+     * if it does not it may still be dependant on a value as long as it is not empty string.
+     * take in the specific field (from doc) and the jsx component to return.
+     */
+    const conditionalChecks = (field, component) => {
+        let dependencyVal;
+        const keyName = Object.keys(formData).find((key) => {
+            const [depKey, depValue] = field.fieldDependencies
+                .split(":")
+                .map((val) => val.trim());
+            if (depValue) {
+                dependencyVal = depValue;
+            }
+            return key.includes(depKey);
+        });
+
+        if (keyName) {
+            if (dependencyVal) {
+                if (dependencyVal == formData[keyName]) {
+                    return <>{component}</>;
+                }
+            } else {
+                if (formData[keyName] != "") {
+                    return <>{component}</>;
+                }
+            }
+        } else {
+            return <></>;
+        }
+    };
+
     const renderFields = () => {
         if (!doc) {
             return null;
         }
-        console.log(doc);
         return doc.tmpf_fields.map((field) => {
             if (field.fieldType === "text") {
-                return (
-                    <TextField
-                        key={field.fieldName}
-                        name={field.fieldName}
-                        value={formData[field.fieldName]}
-                        onChange={handleFieldChange}
-                        reviewMode={reviewFields}
-                        defaults={formData[field.fieldName]}
-                        rawTag={field.fieldTag}
-                        highlightAllMatchingText={highlightMatchingText}
-                        removeHighlightText={removeHighlightText}
-                    />
-                );
+                if (field.fieldDependencies == "") {
+                    return (
+                        <TextField
+                            key={field.fieldName}
+                            name={field.fieldName}
+                            value={formData[field.fieldName]}
+                            onChange={handleFieldChange}
+                            reviewMode={reviewFields}
+                            defaults={formData[field.fieldName]}
+                            rawTag={field.fieldTag}
+                            highlightAllMatchingText={highlightMatchingText}
+                            removeHighlightText={removeHighlightText}
+                        />
+                    );
+                } else if (field.fieldDependencies != "") {
+                    return conditionalChecks(
+                        field,
+                        <TextField
+                            key={field.fieldName}
+                            name={field.fieldName}
+                            value={formData[field.fieldName]}
+                            onChange={handleFieldChange}
+                            reviewMode={reviewFields}
+                            defaults={formData[field.fieldName]}
+                            rawTag={field.fieldTag}
+                            highlightAllMatchingText={highlightMatchingText}
+                            removeHighlightText={removeHighlightText}
+                        />
+                    );
+                }
             } else if (field.fieldType === "date") {
-                return (
-                    <DateField
-                        key={field.fieldName}
-                        name={field.fieldName}
-                        value={formData[field.fieldName]}
-                        onChange={handleFieldChange}
-                        reviewMode={reviewFields}
-                        defaults={formData[field.fieldName]}
-                        rawTag={field.fieldTag}
-                        highlightAllMatchingText={highlightMatchingText}
-                        removeHighlightText={removeHighlightText}
-                    />
-                );
+                if (field.fieldDependencies == "") {
+                    return (
+                        <DateField
+                            key={field.fieldName}
+                            name={field.fieldName}
+                            value={formData[field.fieldName]}
+                            onChange={handleFieldChange}
+                            reviewMode={reviewFields}
+                            defaults={formData[field.fieldName]}
+                            rawTag={field.fieldTag}
+                            highlightAllMatchingText={highlightMatchingText}
+                            removeHighlightText={removeHighlightText}
+                        />
+                    );
+                } else if (field.fieldDependencies != "") {
+                    return conditionalChecks(
+                        field,
+                        <DateField
+                            key={field.fieldName}
+                            name={field.fieldName}
+                            value={formData[field.fieldName]}
+                            onChange={handleFieldChange}
+                            reviewMode={reviewFields}
+                            defaults={formData[field.fieldName]}
+                            rawTag={field.fieldTag}
+                            highlightAllMatchingText={highlightMatchingText}
+                            removeHighlightText={removeHighlightText}
+                        />
+                    );
+                }
             } else if (field.fieldType === "num") {
-                return (
-                    <NumField
-                        key={field.fieldName}
-                        name={field.fieldName}
-                        value={formData[field.fieldName]}
-                        onChange={handleFieldChange}
-                        reviewMode={reviewFields}
-                        defaults={formData[field.fieldName]}
-                        rawTag={field.fieldTag}
-                        highlightAllMatchingText={highlightMatchingText}
-                        removeHighlightText={removeHighlightText}
-                    />
-                );
+                if (field.fieldDependencies == "") {
+                    return (
+                        <NumField
+                            key={field.fieldName}
+                            name={field.fieldName}
+                            value={formData[field.fieldName]}
+                            onChange={handleFieldChange}
+                            reviewMode={reviewFields}
+                            defaults={formData[field.fieldName]}
+                            rawTag={field.fieldTag}
+                            highlightAllMatchingText={highlightMatchingText}
+                            removeHighlightText={removeHighlightText}
+                        />
+                    );
+                } else if (field.fieldDependencies != "") {
+                    return conditionalChecks(
+                        field,
+                        <NumField
+                            key={field.fieldName}
+                            name={field.fieldName}
+                            value={formData[field.fieldName]}
+                            onChange={handleFieldChange}
+                            reviewMode={reviewFields}
+                            defaults={formData[field.fieldName]}
+                            rawTag={field.fieldTag}
+                            highlightAllMatchingText={highlightMatchingText}
+                            removeHighlightText={removeHighlightText}
+                        />
+                    );
+                }
             } else if (field.fieldType === "dropdown") {
-                return (
-                    <DropDownField
-                        key={field.fieldName}
-                        name={field.fieldName}
-                        value={formData[field.fieldName]}
-                        options={field.fieldOptions}
-                        onChange={handleFieldChange}
-                        reviewMode={reviewFields}
-                        defaults={formData[field.fieldName]}
-                        rawTag={field.fieldTag}
-                        highlightAllMatchingText={highlightMatchingText}
-                        removeHighlightText={removeHighlightText}
-                    />
-                );
+                if (field.fieldDependencies == "") {
+                    return (
+                        <DropDownField
+                            key={field.fieldName}
+                            name={field.fieldName}
+                            value={formData[field.fieldName]}
+                            options={field.fieldOptions}
+                            onChange={handleFieldChange}
+                            reviewMode={reviewFields}
+                            defaults={formData[field.fieldName]}
+                            rawTag={field.fieldTag}
+                            highlightAllMatchingText={highlightMatchingText}
+                            removeHighlightText={removeHighlightText}
+                        />
+                    );
+                } else if (field.fieldDependencies != "") {
+                    return conditionalChecks(
+                        field,
+                        <DropDownField
+                            key={field.fieldName}
+                            name={field.fieldName}
+                            value={formData[field.fieldName]}
+                            options={field.fieldOptions}
+                            onChange={handleFieldChange}
+                            reviewMode={reviewFields}
+                            defaults={formData[field.fieldName]}
+                            rawTag={field.fieldTag}
+                            highlightAllMatchingText={highlightMatchingText}
+                            removeHighlightText={removeHighlightText}
+                        />
+                    );
+                }
             } else {
                 return null;
             }
@@ -211,7 +311,7 @@ const DocFillTemplate = () => {
     };
 
     useEffect(() => {
-        console.log(formData);
+        // console.log(formData);
     }, [formData]);
 
     const handleSubmit = async (e) => {
