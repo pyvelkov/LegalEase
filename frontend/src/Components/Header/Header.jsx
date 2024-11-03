@@ -87,21 +87,29 @@ const Header = () => {
                             color="brand.500"
                             display={{ base: "none", md: "inline-flex" }}
                         >
-                            <Button variant="ghost">Features</Button>
-                            <Button variant="ghost">Pricing</Button>
-                            <Button variant="ghost">About Us</Button>
+                            <Button variant="ghost" isDisabled={true}>
+                                Features
+                            </Button>
+                            <Button variant="ghost" isDisabled={true}>
+                                Pricing
+                            </Button>
+                            <Button variant="ghost" isDisabled={true}>
+                                About Us
+                            </Button>
                             <Skeleton isLoaded={!isLoading}>
                                 <LoginButton Hstack={true} />
                                 <LogoutButton Hstack={true} />
                             </Skeleton>
                         </HStack>
-                        <Button
-                            colorScheme="brand"
-                            size="sm"
-                            display={mobileNav.isOpen ? "none" : "flex"}
-                        >
-                            Get Started
-                        </Button>
+                        <Link to="/fillTemplate">
+                            <Button
+                                colorScheme="brand"
+                                size="sm"
+                                display={mobileNav.isOpen ? "none" : "flex"}
+                            >
+                                Get Started
+                            </Button>
+                        </Link>
                         {isAuthenticated ? (
                             <SkeletonCircle isLoaded={!isLoading}>
                                 <Avatar
@@ -145,14 +153,26 @@ const Header = () => {
                                 rounded="sm"
                                 shadow="sm"
                             >
-                                <Button w="full" variant="ghost">
+                                <Button
+                                    w="full"
+                                    variant="ghost"
+                                    isDisabled={true}
+                                >
                                     Features
                                 </Button>
-                                <Button w="full" variant="ghost">
+                                <Button
+                                    w="full"
+                                    variant="ghost"
+                                    isDisabled={true}
+                                >
                                     Pricing
                                 </Button>
 
-                                <Button w="full" variant="ghost">
+                                <Button
+                                    w="full"
+                                    variant="ghost"
+                                    isDisabled={true}
+                                >
                                     About Us
                                 </Button>
                                 <Skeleton isLoaded={!isLoading}>

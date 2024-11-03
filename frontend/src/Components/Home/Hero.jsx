@@ -95,7 +95,7 @@ const Hero = () => {
                                 fontWeight="extrabold"
                                 fontFamily="fantasy"
                             >
-                                <Box rounded="full" shadow="md">
+                                {/* <Box rounded="full" shadow="md">
                                     <Link to="/">
                                         <Button
                                             w="full"
@@ -115,7 +115,7 @@ const Hero = () => {
                                             Create New Template
                                         </Button>
                                     </Link>
-                                </Box>
+                                </Box> */}
                                 <Box mt={[3, 0]} ml={[null, 3]}>
                                     <Link to="/fillTemplate">
                                         <Button
