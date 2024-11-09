@@ -188,6 +188,7 @@ const getTemplateFields = (templateFile) => {
 // Returns map of fields and values ready to use with docxtemplater
 const prepareFieldsForFill = (fieldValues) => {
     let preparedFields = {};
+    let depsToCheck = new Map();
 
     // Populate field values to the corresponding tag
     fieldValues.map((field) => {
@@ -215,6 +216,31 @@ const prepareFieldsForFill = (fieldValues) => {
         } else {
             // For regular fields [text, date, num]
             preparedFields[tagName] = field.fieldValue;
+
+            // If regular field is dependent on another regular field, not dropdown
+            if (
+                field.fieldDependencies &&
+                !field.fieldDependencies.includes(":") // dependency does not have options
+            ) {
+                const depFieldName = `text_${field.fieldDependencies.replaceAll(
+                    " ",
+                    "_"
+                )}`;
+                const depIfTag = `if_${field.fieldDependencies.replaceAll(
+                    " ",
+                    "_"
+                )}`;
+                // Add dependencies to map to check them after processing all fields
+                depsToCheck.set(depFieldName, depIfTag);
+            }
+        }
+    });
+
+    // Check all found dependencies, if they have a value, set if section to true
+    depsToCheck.forEach((depIfTagName, depFieldName) => {
+        console.log(depFieldName, depIfTagName);
+        if (preparedFields[depFieldName]) {
+            preparedFields[depIfTagName] = true;
         }
     });
 
