@@ -328,6 +328,7 @@ const DocFillTemplate = () => {
                         fieldType: field.fieldType,
                         fieldValue: formData[field.fieldName],
                         fieldOptions: field.fieldOptions,
+                        fieldDependencies: field.fieldDependencies,
                     });
                 });
 
