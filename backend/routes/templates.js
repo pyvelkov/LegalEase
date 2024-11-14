@@ -29,7 +29,7 @@ router.get("/", async (req, res) => {
                 from public.templates_view \
                 join public.template_fields \
                 on tmp_uuid = tmpf_tmp_uuid \
-                where tmp_user_id = $1",
+                where tmp_user_id in ('SYSTEM', $1)",
         values: [userId],
     };
 
@@ -68,7 +68,7 @@ router.get("/:templateId", async (req, res) => {
         text: "select tmp_uuid, tmp_name, tmp_path \
                 from public.templates_view \
                 where tmp_uuid = cast ($1 as uuid) \
-                and tmp_user_id = $2",
+                and tmp_user_id in ('SYSTEM', $2)",
         values: [req.params.templateId, userId],
     };
 
@@ -197,26 +197,13 @@ router.post(
 // Delete the specified template record
 router.delete("/:templateId", async (req, res) => {
     const userId = req.auth.payload.sub;
-    const templatePath = `templates/${req.params.templateId}/`;
-
-    // Create new storage client for GCS and delete file in bucket
-    try {
-        const storageClient = new storage.Storage(getGCPCredentials());
-        await storageClient.bucket("legalease").deleteFiles({
-            prefix: templatePath,
-        });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Error deleting template file from GCS.");
-        return;
-    }
 
     // Construct TEMPLATE SQL query to insert new template record
     const templateUuid = req.params.templateId;
     const templateDeleteSqlQuery = {
         text: "delete from public.templates_view \
                where tmp_uuid = $1 \
-               and tmp_user_id = $2",
+               and tmp_user_id in ('SYSTEM', $2)",
         values: [templateUuid, userId],
     };
 
@@ -238,9 +225,26 @@ router.delete("/:templateId", async (req, res) => {
     }
 
     // Return 404 if no records deleted, otherwise should only be 1 record
-    templateQueryRes.rowCount > 0
-        ? res.status(200).send("Template deleted successfully.")
-        : res.status(404).send();
+    // Only delete template file if we deleted a record in the DB already
+    if (templateQueryRes.rowCount > 0) {
+        //console.log("ROWCOUNT = " + templateQueryRes.rowCount);
+        const templatePath = `templates/${req.params.templateId}/`;
+
+        // Create new storage client for GCS and delete file in bucket
+        try {
+            const storageClient = new storage.Storage(getGCPCredentials());
+            await storageClient.bucket("legalease").deleteFiles({
+                prefix: templatePath,
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Error deleting template file from GCS.");
+            return;
+        }
+        res.status(200).send("Template deleted successfully.");
+    } else {
+        res.status(404).send();
+    }
 });
 
 export default router;

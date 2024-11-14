@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
                 from public.templates_view join public.template_fields \
                 on tmp_uuid = tmpf_tmp_uuid \
                 where tmp_uuid = cast ($1 as uuid) \
-                and tmp_user_id = $2",
+                and tmp_user_id in ('SYSTEM', $2)",
         values: [req.params.templateId, userId],
     };
 

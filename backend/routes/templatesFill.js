@@ -23,7 +23,7 @@ router.post("/", upload.none(), async (req, res) => {
         text: "select tmp_uuid, tmp_name, tmp_path \
                 from public.templates_view \
                 where tmp_uuid = cast ($1 as uuid) \
-                and tmp_user_id = $2",
+                and tmp_user_id in ('SYSTEM', $2)",
         values: [req.params.templateId, userId],
     };
 
