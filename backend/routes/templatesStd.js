@@ -13,7 +13,7 @@ const router = Router();
 const fileUpload = multer();
 
 /* =================
- * Upload a template
+ * Upload a standard template (ONLY FOR legalease account)
  * ================= */
 router.post(
     "/:templateId",
@@ -92,7 +92,7 @@ router.post(
     }
 );
 
-// Delete the specified template record
+// Delete the specified template record (ONLY FOR legalease account)
 router.delete("/:templateId", async (req, res) => {
     const userId = req.auth.payload.sub;
 
@@ -130,7 +130,6 @@ router.delete("/:templateId", async (req, res) => {
     // Return 404 if no records deleted, otherwise should only be 1 record
     // Only delete template file if we deleted a record in the DB already
     if (templateQueryRes.rowCount > 0) {
-        //console.log("ROWCOUNT = " + templateQueryRes.rowCount);
         const templatePath = `templates/${req.params.templateId}/`;
 
         // Create new storage client for GCS and delete file in bucket

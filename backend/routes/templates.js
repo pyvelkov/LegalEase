@@ -25,7 +25,7 @@ router.get("/", async (req, res) => {
 
     // Configure SQL query to select template metadata for all available templates
     const templateSqlQuery = {
-        text: "select tmp_uuid, tmp_name, tmp_date_created, tmpf_fields \
+        text: "select tmp_uuid, tmp_name, tmp_date_created, tmpf_fields, is_standard \
                 from public.templates_view \
                 join public.template_fields \
                 on tmp_uuid = tmpf_tmp_uuid \
