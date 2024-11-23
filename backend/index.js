@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import templatesRoutes from "./routes/templates.js";
 import templatesFillRoutes from "./routes/templatesFill.js";
 import templatesInfoRoutes from "./routes/templatesInfo.js";
+import templatesStdRoutes from "./routes/templatesStd.js";
 
 import helmet from "helmet";
 import * as auth from "./auth.js";
@@ -45,10 +46,12 @@ app.use(
 const templatesRouter = templatesRoutes; // /templates/
 const templatesFillRouter = templatesFillRoutes; // /templates/:uuid/filled
 const templatesInfoRouter = templatesInfoRoutes; // /templates/:uuid/info
+const templatesStdRouter = templatesStdRoutes; // /templatesStd/
 
 // MAIN APP ROUTER CONFIG
 //app.use("/wordRoutes", wordRoutes);
 app.use("/templates", auth.isAuthorized(), templatesRouter);
+app.use("/templatesStd", auth.isAuthorized(), templatesStdRouter); //Admin route for uploading standard templates
 
 // SUB ROUTERS CONFIG
 // ------------------
